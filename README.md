@@ -1,5 +1,3 @@
-#Subtracker
+# Subtracker
 
->[Tommi](github.com/tpku)
-
->[Magnus](github.com/magnusvv)
+Subscription tracker built with Expo React Native and Supabase
