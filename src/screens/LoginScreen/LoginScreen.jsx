@@ -35,7 +35,7 @@ const LoginScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    // const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
 
     const { height } = useWindowDimensions();
 
@@ -48,6 +48,7 @@ const LoginScreen = () => {
             email: email,
             password: password,
         });
+        setIsLoggedIn("loggedIn");
 
         if (data) console.log(data.user);
         if (error) Alert.alert(error.message);
@@ -64,6 +65,7 @@ const LoginScreen = () => {
 
     const onLogoutPressed = async () => {
         const { error } = await supabase.auth.signOut();
+        setIsLoggedIn("loggedOut");
 
         console.warn("Retrieve password pressed");
         if (error) Alert.alert(error.message);
@@ -78,7 +80,7 @@ const LoginScreen = () => {
             <CustomButton text="Login" onPress={() => onLoginPressed(email, password)} />
             <CustomButton text="Sign up" onPress={onSignupPressed} btnType={btn["2nd"]} />
             <CustomButton text="Retrieve password" onPress={onRetrievePasswordPress} btnType={btn["3rd"]} textType={btn["3rd"]} />
-            <CustomButton text="Logout" onPress={onLogoutPressed} btnType={btn["3rd"]} textType={btn["3rd"]} />
+            <CustomButton text="Logout" onPress={onLogoutPressed} btnType={btn["3rd"]} textType={btn["3rd"]} isLoggedIn={isLoggedIn} />
             <View>
                 <Spinner visible={loading} />
             </View>

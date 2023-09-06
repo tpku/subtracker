@@ -2,9 +2,9 @@ import React from "react";
 import { View, Text, Button, StyleSheet, Pressable } from "react-native";
 
 const CustomButton = (props) => {
-    const { text, onPress, btnType = "PRIMARY", textType = "PRIMARY" } = props;
+    const { text, onPress, btnType = "PRIMARY", textType = "PRIMARY", isLoggedIn = "" } = props;
     return (
-        <Pressable style={[styles.container, styles[`container_${btnType}`]]} onPress={onPress}>
+        <Pressable style={[styles.container, styles[`container_${btnType}`], styles[`${isLoggedIn}`]]} onPress={onPress}>
             <Text style={[styles.text, styles[`text_${textType}`]]}>{text}</Text>
         </Pressable>
     );
@@ -52,6 +52,12 @@ const styles = StyleSheet.create({
 
     text_TERTIARY: {
         color: "#FF69B4",
+    },
+    loggedIn: {
+        display: "flex",
+    },
+    loggedOut: {
+        display: "none",
     },
 });
 
