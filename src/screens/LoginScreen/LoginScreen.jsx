@@ -1,6 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, useWindowDimensions, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+  Alert,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// This solves the URL.hostname is not implemented-error. Found at: https://github.com/supabase/supabase/issues/8464
+import "react-native-url-polyfill/auto";
+
 import { createClient } from "@supabase/supabase-js";
 
 import Logo from "../../../assets/adaptive-icon.png";
@@ -13,22 +24,22 @@ import Spinner from "react-native-loading-spinner-overlay";
 
 // Remove supabase_url and key before deployment
 const supabase = createClient(
-    "https://hsspcjlmxksnfzlifbml.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhzc3BjamxteGtzbmZ6bGlmYm1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM5MDU3NzYsImV4cCI6MjAwOTQ4MTc3Nn0.9D6HjzbKSptqMZnsBvxutFm-Vm0p0t24k85Ez_OuaAY",
-    {
-        auth: {
-            storage: AsyncStorage,
-            autoRefreshToken: true,
-            persistSession: true,
-            detectSessionInUrl: false,
-        },
-    }
+  "https://hsspcjlmxksnfzlifbml.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhzc3BjamxteGtzbmZ6bGlmYm1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM5MDU3NzYsImV4cCI6MjAwOTQ4MTc3Nn0.9D6HjzbKSptqMZnsBvxutFm-Vm0p0t24k85Ez_OuaAY",
+  {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
 );
 
 const btn = {
-    "1st": "PRIMARY",
-    "2nd": "SECONDARY",
-    "3rd": "TERTIARY",
+  "1st": "PRIMARY",
+  "2nd": "SECONDARY",
+  "3rd": "TERTIARY",
 };
 
 const LoginScreen = () => {
@@ -89,15 +100,15 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    root: {
-        alignItems: "center",
-        padding: 20,
-    },
-    logo: {
-        width: "70%",
-        maxWidth: 300,
-        maxHeight: 300,
-    },
+  root: {
+    alignItems: "center",
+    padding: 20,
+  },
+  logo: {
+    width: "70%",
+    maxWidth: 300,
+    maxHeight: 300,
+  },
 });
 
 export default LoginScreen;
