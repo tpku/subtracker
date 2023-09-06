@@ -43,84 +43,60 @@ const btn = {
 };
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
 
-  const { height } = useWindowDimensions();
+    const { height } = useWindowDimensions();
 
-  const onLoginPressed = async (email, password) => {
-    console.log(email);
-    console.log(password);
-    setLoading(true);
+    const onLoginPressed = async (email, password) => {
+        console.log(email);
+        console.log(password);
+        setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+        setIsLoggedIn("loggedIn");
 
-    if (data) console.log(data.user);
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  };
+        if (data) console.log(data.user);
+        if (error) Alert.alert(error.message);
+        setLoading(false);
+    };
 
-  const onSignupPressed = (content) => {
-    console.warn("Sign up pressed");
-  };
+    const onSignupPressed = (content) => {
+        console.warn("Sign up pressed");
+    };
 
-  const onRetrievePasswordPress = (content) => {
-    console.warn("Retrieve password pressed");
-  };
+    const onRetrievePasswordPress = (content) => {
+        console.warn("Retrieve password pressed");
+    };
 
-  const onLogoutPressed = async () => {
-    const { error } = await supabase.auth.signOut();
+    const onLogoutPressed = async () => {
+        const { error } = await supabase.auth.signOut();
+        setIsLoggedIn("loggedOut");
 
-    console.warn("Retrieve password pressed");
-    if (error) Alert.alert(error.message);
-  };
+        console.warn("Retrieve password pressed");
+        if (error) Alert.alert(error.message);
+    };
 
-  return (
-    <View style={styles.root}>
-      <Image
-        source={Logo}
-        style={[styles.logo, { height: height * 0.3 }]}
-        resizeMode="contain"
-      />
-      <InputField placeholder="Email" value={email} setValue={setEmail} />
-      <InputField
-        placeholder="Password"
-        value={password}
-        setValue={setPassword}
-        isPassword
-      />
+    return (
+        <View style={styles.root}>
+            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
+            <InputField placeholder="Email" value={email} setValue={setEmail} />
+            <InputField placeholder="Password" value={password} setValue={setPassword} isPassword />
 
-      <CustomButton
-        text="Login"
-        onPress={() => onLoginPressed(email, password)}
-      />
-      <CustomButton
-        text="Sign up"
-        onPress={onSignupPressed}
-        btnType={btn["2nd"]}
-      />
-      <CustomButton
-        text="Retrieve password"
-        onPress={onRetrievePasswordPress}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
-      />
-      <CustomButton
-        text="Logout"
-        onPress={onLogoutPressed}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
-      />
-      <View>
-        <Spinner visible={loading} />
-      </View>
-    </View>
-  );
+            <CustomButton text="Login" onPress={() => onLoginPressed(email, password)} />
+            <CustomButton text="Sign up" onPress={onSignupPressed} btnType={btn["2nd"]} />
+            <CustomButton text="Retrieve password" onPress={onRetrievePasswordPress} btnType={btn["3rd"]} textType={btn["3rd"]} />
+            <CustomButton text="Logout" onPress={onLogoutPressed} btnType={btn["3rd"]} textType={btn["3rd"]} isLoggedIn={isLoggedIn} />
+            <View>
+                <Spinner visible={loading} />
+            </View>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
