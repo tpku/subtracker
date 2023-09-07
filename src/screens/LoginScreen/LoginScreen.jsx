@@ -1,45 +1,17 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-  Alert,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// This solves the URL.hostname is not implemented-error. Found at: https://github.com/supabase/supabase/issues/8464
-import "react-native-url-polyfill/auto";
-
-import { createClient } from "@supabase/supabase-js";
+import supabase from "../../lib/initSupabase";
+import { View, Text, Image, StyleSheet, useWindowDimensions, Alert } from "react-native";
+import "react-native-url-polyfill/auto"; // This solves the URL.hostname is not implemented-error. Found at: https://github.com/supabase/supabase/issues/8464
 
 import Logo from "../../../assets/adaptive-icon.png";
-
 import InputField from "../../components/InputField/InputField";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import Spinner from "react-native-loading-spinner-overlay";
-// const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
-// const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-
-// Remove supabase_url and key before deployment
-const supabase = createClient(
-  "https://hsspcjlmxksnfzlifbml.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhzc3BjamxteGtzbmZ6bGlmYm1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM5MDU3NzYsImV4cCI6MjAwOTQ4MTc3Nn0.9D6HjzbKSptqMZnsBvxutFm-Vm0p0t24k85Ez_OuaAY",
-  {
-    auth: {
-      storage: AsyncStorage,
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: false,
-    },
-  }
-);
 
 const btn = {
-  "1st": "PRIMARY",
-  "2nd": "SECONDARY",
-  "3rd": "TERTIARY",
+    "1st": "PRIMARY",
+    "2nd": "SECONDARY",
+    "3rd": "TERTIARY",
 };
 
 const LoginScreen = () => {
@@ -47,27 +19,37 @@ const LoginScreen = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
-
     const { height } = useWindowDimensions();
 
     const onLoginPressed = async (email, password) => {
-        console.log(email);
-        console.log(password);
         setLoading(true);
-
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const {
+            data: { user },
+            error,
+        } = await supabase.auth.signInWithPassword({
             email: email,
             password: password,
         });
         setIsLoggedIn("loggedIn");
 
-        if (data) console.log(data.user);
+        // Use later to add user data to public users table on account registration.
+        // if (user) console.log(user);
+        // const $userId = user.id;
+
         if (error) Alert.alert(error.message);
         setLoading(false);
     };
 
-    const onSignupPressed = (content) => {
+    const onSignupPressed = async (email, password) => {
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        });
+
+        if (data) console.log(data);
+
         console.warn("Sign up pressed");
+        if (error) Alert.alert(error.message);
     };
 
     const onRetrievePasswordPress = (content) => {
@@ -75,11 +57,14 @@ const LoginScreen = () => {
     };
 
     const onLogoutPressed = async () => {
+        setLoading(true);
         const { error } = await supabase.auth.signOut();
-        setIsLoggedIn("loggedOut");
+        window.localStorage.clear();
 
-        console.warn("Retrieve password pressed");
+        setIsLoggedIn("loggedOut");
+        console.warn("Logout pressed");
         if (error) Alert.alert(error.message);
+        setLoading(false);
     };
 
     return (
@@ -89,7 +74,7 @@ const LoginScreen = () => {
             <InputField placeholder="Password" value={password} setValue={setPassword} isPassword />
 
             <CustomButton text="Login" onPress={() => onLoginPressed(email, password)} />
-            <CustomButton text="Sign up" onPress={onSignupPressed} btnType={btn["2nd"]} />
+            <CustomButton text="Sign up" onPress={() => onSignupPressed(email, password)} btnType={btn["2nd"]} />
             <CustomButton text="Retrieve password" onPress={onRetrievePasswordPress} btnType={btn["3rd"]} textType={btn["3rd"]} />
             <CustomButton text="Logout" onPress={onLogoutPressed} btnType={btn["3rd"]} textType={btn["3rd"]} isLoggedIn={isLoggedIn} />
             <View>
@@ -100,15 +85,15 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  root: {
-    alignItems: "center",
-    padding: 20,
-  },
-  logo: {
-    width: "70%",
-    maxWidth: 300,
-    maxHeight: 300,
-  },
+    root: {
+        alignItems: "center",
+        padding: 20,
+    },
+    logo: {
+        width: "70%",
+        maxWidth: 300,
+        maxHeight: 300,
+    },
 });
 
 export default LoginScreen;
