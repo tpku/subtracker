@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import supabase from '../../lib/initSupabase'
-import { View, Text, Alert, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from "react"
+import supabase from "../../lib/initSupabase"
+import { View, Text, Alert, StyleSheet } from "react-native"
 
-import CustomButton from '../../components/CustomButton/CustomButton'
-import InputField from '../../components/InputField/InputField'
-import Spinner from 'react-native-loading-spinner-overlay'
+import CustomButton from "../../components/CustomButton/CustomButton"
+import InputField from "../../components/InputField/InputField"
+import Spinner from "react-native-loading-spinner-overlay"
 
 const DashboardScreen = (session) => {
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [services, setServices] = useState('')
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [services, setServices] = useState("")
   const [loggedInUser, setLoggedInUser] = useState({})
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const DashboardScreen = (session) => {
 
   const getUser = async () => {
     setLoading(true)
-    const { data: user, error } = await supabase.from('users').select('*')
+    const { data: user, error } = await supabase.from("users").select("*")
     if (user) setLoggedInUser(user[0])
 
     if (error) Alert.alert(error.message)
@@ -67,8 +67,8 @@ const DashboardScreen = (session) => {
     const { error } = await supabase.auth.signOut()
     // window.localStorage.clear()
 
-    setIsLoggedIn('loggedOut')
-    console.warn('Logout pressed')
+    setIsLoggedIn("loggedOut")
+    console.warn("Logout pressed")
     if (error) Alert.alert(error.message)
     setLoading(false)
   }
@@ -102,8 +102,8 @@ const DashboardScreen = (session) => {
       <CustomButton
         text="Logout"
         onPress={onLogoutPressed}
-        btnType={'SECONDARY'}
-        isLoggedIn={'loggedIn'}
+        btnType={"SECONDARY"}
+        isLoggedIn={"loggedIn"}
       />
 
       {/* Update Users below, 2x InputFields, 1x CustomButton */}
@@ -147,13 +147,13 @@ const DashboardScreen = (session) => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
-    backgroundColor: 'orangered',
+    backgroundColor: "orangered",
   },
   heading: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 10,
   },
 })
