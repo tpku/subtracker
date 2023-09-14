@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import supabase from "../../lib/initSupabase";
-import { View, Text, Image, StyleSheet, useWindowDimensions, Alert } from "react-native";
-import "react-native-url-polyfill/auto"; // This solves the URL.hostname is not implemented-error. Found at: https://github.com/supabase/supabase/issues/8464
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+  Alert,
+} from "react-native";
 
 import Logo from "../../../assets/adaptive-icon.png";
 import InputField from "../../components/InputField/InputField";
@@ -9,91 +15,120 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const btn = {
-    "1st": "PRIMARY",
-    "2nd": "SECONDARY",
-    "3rd": "TERTIARY",
+  "1st": "PRIMARY",
+  "2nd": "SECONDARY",
+  "3rd": "TERTIARY",
 };
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
-    const { height } = useWindowDimensions();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
+  const { height } = useWindowDimensions();
 
-    const onLoginPressed = async (email, password) => {
-        setLoading(true);
-        const {
-            data: { user },
-            error,
-        } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
-        setIsLoggedIn("loggedIn");
+  const onLoginPressed = async (email, password) => {
+    setLoading(true);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+    setIsLoggedIn("loggedIn");
 
-        // Use later to add user data to public users table on account registration.
-        // if (user) console.log(user);
-        // const $userId = user.id;
+    // Use later to add user data to public users table on account registration.
+    // if (user) console.log(user);
+    // const $userId = user.id;
 
-        if (error) Alert.alert(error.message);
-        setLoading(false);
-    };
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  };
 
-    const onSignupPressed = async (email, password) => {
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-        });
+  const onSignupPressed = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
 
-        if (data) console.log(data);
+    if (data) console.log(data);
 
-        console.warn("Sign up pressed");
-        if (error) Alert.alert(error.message);
-    };
+    console.warn("Sign up pressed");
+    if (error) Alert.alert(error.message);
+  };
 
-    const onRetrievePasswordPress = (content) => {
-        console.warn("Retrieve password pressed");
-    };
+  const onRetrievePasswordPress = (content) => {
+    console.warn("Retrieve password pressed");
+  };
 
-    const onLogoutPressed = async () => {
-        setLoading(true);
-        const { error } = await supabase.auth.signOut();
-        window.localStorage.clear();
+  const onLogoutPressed = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signOut();
+    window.localStorage.clear();
 
-        setIsLoggedIn("loggedOut");
-        console.warn("Logout pressed");
-        if (error) Alert.alert(error.message);
-        setLoading(false);
-    };
+    setIsLoggedIn("loggedOut");
+    console.warn("Logout pressed");
+    if (error) Alert.alert(error.message);
+    setLoading(false);
+  };
 
-    return (
-        <View style={styles.root}>
-            <Image source={Logo} style={[styles.logo, { height: height * 0.3 }]} resizeMode="contain" />
-            <InputField placeholder="Email" value={email} setValue={setEmail} />
-            <InputField placeholder="Password" value={password} setValue={setPassword} isPassword />
+  return (
+    <View style={styles.root}>
+      <Image
+        source={Logo}
+        style={[styles.logo, { height: height * 0.3 }]}
+        resizeMode="contain"
+      />
+      <InputField placeholder="Email" value={email} setValue={setEmail} />
+      <InputField
+        placeholder="Password"
+        value={password}
+        setValue={setPassword}
+        isPassword
+      />
 
-            <CustomButton text="Login" onPress={() => onLoginPressed(email, password)} />
-            <CustomButton text="Sign up" onPress={() => onSignupPressed(email, password)} btnType={btn["2nd"]} />
-            <CustomButton text="Retrieve password" onPress={onRetrievePasswordPress} btnType={btn["3rd"]} textType={btn["3rd"]} />
-            <CustomButton text="Logout" onPress={onLogoutPressed} btnType={btn["3rd"]} textType={btn["3rd"]} isLoggedIn={isLoggedIn} />
-            <View>
-                <Spinner visible={loading} />
-            </View>
-        </View>
-    );
+      <CustomButton
+        text="Login"
+        onPress={() => onLoginPressed(email, password)}
+      />
+      <CustomButton
+        text="Sign up"
+        onPress={() => onSignupPressed(email, password)}
+        btnType={btn["2nd"]}
+      />
+      <CustomButton
+        text="Retrieve password"
+        onPress={onRetrievePasswordPress}
+        btnType={btn["3rd"]}
+        textType={btn["3rd"]}
+      />
+      <CustomButton
+        text="Logout"
+        onPress={onLogoutPressed}
+        btnType={btn["3rd"]}
+        textType={btn["3rd"]}
+        isLoggedIn={isLoggedIn}
+      />
+      <View>
+        <Spinner visible={loading} />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    root: {
-        alignItems: "center",
-        padding: 20,
-    },
-    logo: {
-        width: "70%",
-        maxWidth: 300,
-        maxHeight: 300,
-    },
+  root: {
+    flex: 1,
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "orangered",
+  },
+  logo: {
+    width: "70%",
+    maxWidth: 300,
+    maxHeight: 300,
+  },
 });
 
 export default LoginScreen;
