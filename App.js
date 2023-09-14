@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 // This is from the React Navigation pack:
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import supabase from "./src/lib/initSupabase";
-import { StatusBar } from "expo-status-bar";
-import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import supabase from './src/lib/initSupabase'
+import { StatusBar } from 'expo-status-bar'
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 
-import LoginScreen from "./src/screens/LoginScreen";
-import DashboardScreen from "./src/screens/DashboardScreen/DashboardScreen";
+import LoginScreen from './src/screens/LoginScreen'
+import DashboardScreen from './src/screens/DashboardScreen/DashboardScreen'
 
 export default function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(null)
   // console.log(session);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+      setSession(session)
+    })
 
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+      setSession(session)
+    })
+  }, [])
 
   // Creates the stack the screens will fit into:
-  const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator()
 
   return (
     <NavigationContainer>
@@ -41,13 +41,13 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "orangered",
+    backgroundColor: 'orangered',
     // backgroundColor: "#EFE9F4",
   },
-});
+})
