@@ -51,7 +51,6 @@ const LoginScreen = () => {
       email: email,
       password: password,
     })
-
     if (data) console.log(data)
 
     console.warn('Sign up pressed')
@@ -65,7 +64,7 @@ const LoginScreen = () => {
   const onLogoutPressed = async () => {
     setLoading(true)
     const { error } = await supabase.auth.signOut()
-    window.localStorage.clear()
+    // window.localStorage.clear()
 
     setIsLoggedIn('loggedOut')
     console.warn('Logout pressed')
