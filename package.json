@@ -37,6 +37,6 @@
   "prettier": {
     "jsxBracketSameLine": true,
     "semi": false,
-    "singleQuote": true
+    "singleQuote": false
   }
 }

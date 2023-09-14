@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   Text,
@@ -6,14 +6,14 @@ import {
   StyleSheet,
   useWindowDimensions,
   Alert,
-} from "react-native";
+} from "react-native"
 
 const StartScreen = () => {
   return (
     <>
       <Text>StartScreen</Text>
     </>
-  );
-};
+  )
+}
 
-export default StartScreen;
+export default StartScreen
