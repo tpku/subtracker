@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "prettier": "prettier 'src/**/*.js'",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -29,7 +30,13 @@
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "prettier": "^3.0.3"
   },
-  "private": true
+  "private": true,
+  "prettier": {
+    "jsxBracketSameLine": true,
+    "semi": false,
+    "singleQuote": true
+  }
 }

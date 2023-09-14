@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import supabase from "../../lib/initSupabase";
+import React, { useState } from 'react'
+import supabase from '../../lib/initSupabase'
 import {
   View,
   Text,
@@ -7,71 +7,71 @@ import {
   StyleSheet,
   useWindowDimensions,
   Alert,
-} from "react-native";
+} from 'react-native'
 
-import Logo from "../../../assets/adaptive-icon.png";
-import InputField from "../../components/InputField/InputField";
-import CustomButton from "../../components/CustomButton/CustomButton";
-import Spinner from "react-native-loading-spinner-overlay";
+import Logo from '../../../assets/adaptive-icon.png'
+import InputField from '../../components/InputField/InputField'
+import CustomButton from '../../components/CustomButton/CustomButton'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const btn = {
-  "1st": "PRIMARY",
-  "2nd": "SECONDARY",
-  "3rd": "TERTIARY",
-};
+  '1st': 'PRIMARY',
+  '2nd': 'SECONDARY',
+  '3rd': 'TERTIARY',
+}
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState("loggedOut");
-  const { height } = useWindowDimensions();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState('loggedOut')
+  const { height } = useWindowDimensions()
 
   const onLoginPressed = async (email, password) => {
-    setLoading(true);
+    setLoading(true)
     const {
       data: { user },
       error,
     } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
-    });
-    setIsLoggedIn("loggedIn");
+    })
+    setIsLoggedIn('loggedIn')
 
     // Use later to add user data to public users table on account registration.
     // if (user) console.log(user);
     // const $userId = user.id;
 
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  };
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
 
   const onSignupPressed = async (email, password) => {
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
-    });
+    })
 
-    if (data) console.log(data);
+    if (data) console.log(data)
 
-    console.warn("Sign up pressed");
-    if (error) Alert.alert(error.message);
-  };
+    console.warn('Sign up pressed')
+    if (error) Alert.alert(error.message)
+  }
 
   const onRetrievePasswordPress = (content) => {
-    console.warn("Retrieve password pressed");
-  };
+    console.warn('Retrieve password pressed')
+  }
 
   const onLogoutPressed = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    window.localStorage.clear();
+    setLoading(true)
+    const { error } = await supabase.auth.signOut()
+    window.localStorage.clear()
 
-    setIsLoggedIn("loggedOut");
-    console.warn("Logout pressed");
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  };
+    setIsLoggedIn('loggedOut')
+    console.warn('Logout pressed')
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
 
   return (
     <View style={styles.root}>
@@ -95,40 +95,40 @@ const LoginScreen = () => {
       <CustomButton
         text="Sign up"
         onPress={() => onSignupPressed(email, password)}
-        btnType={btn["2nd"]}
+        btnType={btn['2nd']}
       />
       <CustomButton
         text="Retrieve password"
         onPress={onRetrievePasswordPress}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
+        btnType={btn['3rd']}
+        textType={btn['3rd']}
       />
       <CustomButton
         text="Logout"
         onPress={onLogoutPressed}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
+        btnType={btn['3rd']}
+        textType={btn['3rd']}
         isLoggedIn={isLoggedIn}
       />
       <View>
         <Spinner visible={loading} />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: "orangered",
+    backgroundColor: 'orangered',
   },
   logo: {
-    width: "70%",
+    width: '70%',
     maxWidth: 300,
     maxHeight: 300,
   },
-});
+})
 
-export default LoginScreen;
+export default LoginScreen

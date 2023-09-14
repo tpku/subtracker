@@ -1,70 +1,70 @@
-import React, { useEffect, useState } from "react";
-import supabase from "../../lib/initSupabase";
-import { View, Text, Alert, StyleSheet } from "react-native";
+import React, { useEffect, useState } from 'react'
+import supabase from '../../lib/initSupabase'
+import { View, Text, Alert, StyleSheet } from 'react-native'
 
-import CustomButton from "../../components/CustomButton/CustomButton";
-import InputField from "../../components/InputField/InputField";
-import Spinner from "react-native-loading-spinner-overlay";
+import CustomButton from '../../components/CustomButton/CustomButton'
+import InputField from '../../components/InputField/InputField'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const DashboardScreen = (session) => {
-  const [loading, setLoading] = useState(false);
-  const [authUser, setAuthUser] = useState([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [loggedInUser, setLoggedInUser] = useState({});
+  const [loading, setLoading] = useState(false)
+  const [authUser, setAuthUser] = useState([])
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [loggedInUser, setLoggedInUser] = useState({})
 
   useEffect(() => {
     const sessionUser = async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
-      setAuthUser(user);
-    };
-    sessionUser();
+      } = await supabase.auth.getUser()
+      setAuthUser(user)
+    }
+    sessionUser()
 
-    getUsers();
-  }, []);
+    getUsers()
+  }, [])
 
   // console.log(authUser);
 
   const getUsers = async () => {
-    setLoading(true);
-    const { data: user, error } = await supabase.from("users").select("*");
-    if (user) setLoggedInUser(user[0]);
+    setLoading(true)
+    const { data: user, error } = await supabase.from('users').select('*')
+    if (user) setLoggedInUser(user[0])
 
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  };
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
 
   const onLogoutPressed = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    window.localStorage.clear();
+    setLoading(true)
+    const { error } = await supabase.auth.signOut()
+    window.localStorage.clear()
 
-    setIsLoggedIn("loggedOut");
-    console.warn("Logout pressed");
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  };
+    setIsLoggedIn('loggedOut')
+    console.warn('Logout pressed')
+    if (error) Alert.alert(error.message)
+    setLoading(false)
+  }
 
   const insertName = async (firstName, lastName) => {
-    setLoading(true);
-    let updateData = {};
-    if (firstName) updateData.first_name = firstName;
-    if (lastName) updateData.last_name = lastName;
+    setLoading(true)
+    let updateData = {}
+    if (firstName) updateData.first_name = firstName
+    if (lastName) updateData.last_name = lastName
 
     const { error } = await supabase
-      .from("users")
+      .from('users')
       .update(updateData)
-      .eq("id", authUser.id)
-      .select("*");
-    if (!error) console.log("Successfully updated!");
+      .eq('id', authUser.id)
+      .select('*')
+    if (!error) console.log('Successfully updated!')
     if (error) {
-      Alert.alert(error);
+      Alert.alert(error)
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <View style={styles.root}>
@@ -75,8 +75,8 @@ const DashboardScreen = (session) => {
       <CustomButton
         text="Logout"
         onPress={onLogoutPressed}
-        btnType={"SECONDARY"}
-        isLoggedIn={"loggedIn"}
+        btnType={'SECONDARY'}
+        isLoggedIn={'loggedIn'}
       />
       <InputField
         placeholder="First name"
@@ -96,21 +96,21 @@ const DashboardScreen = (session) => {
         <Spinner visible={loading} />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
-    backgroundColor: "orangered",
+    backgroundColor: 'orangered',
   },
   heading: {
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 10,
   },
-});
+})
 
-export default DashboardScreen;
+export default DashboardScreen
