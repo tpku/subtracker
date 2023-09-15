@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Button, StyleSheet, Pressable } from "react-native";
+import React from "react"
+import { View, Text, Button, StyleSheet, Pressable } from "react-native"
 
 const CustomButton = (props) => {
   const {
@@ -8,7 +8,7 @@ const CustomButton = (props) => {
     btnType = "PRIMARY",
     textType = "PRIMARY",
     isLoggedIn = "",
-  } = props;
+  } = props
   return (
     <Pressable
       style={[
@@ -16,20 +16,21 @@ const CustomButton = (props) => {
         styles[`container_${btnType}`],
         styles[`${isLoggedIn}`],
       ]}
-      onPress={onPress}
-    >
+      onPress={onPress}>
       <Text style={[styles.text, styles[`text_${textType}`]]}>{text}</Text>
     </Pressable>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
     marginVertical: 5,
 
-    borderRadius: 5,
+    borderRadius: 30,
     alignItems: "center",
+    borderColor: "#f3f3f3",
+    // borderWidth: 2,
 
     boxShadowRadius: 5,
     boxShadowOffset: {
@@ -40,15 +41,15 @@ const styles = StyleSheet.create({
   },
 
   container_PRIMARY: {
-    backgroundColor: "#FF69B4",
+    backgroundColor: "#3693CF",
   },
 
   container_SECONDARY: {
-    backgroundColor: "#e83e00",
+    backgroundColor: "#286d9b",
   },
 
   container_TERTIARY: {
-    backgroundColor: "#FF4500",
+    backgroundColor: "#ff44009e",
     borderColor: "#FF69B4",
     borderWidth: 1,
   },
@@ -72,6 +73,6 @@ const styles = StyleSheet.create({
   loggedOut: {
     display: "none",
   },
-});
+})
 
-export default CustomButton;
+export default CustomButton
