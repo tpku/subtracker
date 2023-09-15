@@ -6,7 +6,7 @@ import CustomButton from "../../components/CustomButton/CustomButton"
 import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
 
-const UserAccountScreen = ({ session }) => {
+const UserSettingsScreen = ({ session }) => {
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
   const [firstName, setFirstName] = useState("")
@@ -119,4 +119,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default UserAccountScreen
+export default UserSettingsScreen
