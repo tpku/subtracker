@@ -8,7 +8,8 @@ import { StatusBar } from "expo-status-bar"
 import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native"
 
 import LoginScreen from "./src/screens/LoginScreen"
-import DashboardScreen from "./src/screens/DashboardScreen/DashboardScreen"
+import DashboardScreen from "./src/screens/DashboardScreen"
+import ProductScreen from "./src/screens/ProductScreen"
 import StartScreen from "./src/screens/StartScreen/StartScreen"
 import SignupScreen from "./src/screens/SignupScreen/SignupScreen"
 
@@ -30,8 +31,11 @@ export default function App() {
   const Stack = createNativeStackNavigator()
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
+    <NavigationContainer styles={styles.root}>
+      <Stack.Navigator
+      // initialRouteName={session && session.user ? "Dashboard" : "Loginscreen"}
+      // screenOptions={{ headerShown: false }}
+      >
         {session && session.user ? (
           <Stack.Screen
             name="Dashboard"
@@ -60,6 +64,7 @@ export default function App() {
             />
           </>
         )}
+        <Stack.Screen name="ProductScreen" component={ProductScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -68,7 +73,7 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "orangered",
+    backgroundColor: "#3693CF",
     // backgroundColor: "#EFE9F4",
   },
 })

@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, Alert, StyleSheet, Pressable } from "react-native"
+import { View, Text, Alert, StyleSheet, ScrollView } from "react-native"
+import { useNavigation } from "@react-navigation/native"
 
 import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
 import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
+import CustomCard from "../../components/CustomCard"
+import { FlatList } from "react-native"
 
 const DashboardScreen = ({ session }) => {
+  const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [services, setServices] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState({})
-  const [fetchedSubscriptions, setFetchedSubscriptions] = useState("")
-  const [selectedSubscription, setSelectedSubscriptionId] = useState("")
 
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${
     currentDate.getMonth() + 1
   }/${currentDate.getDate()}`
-  const initialSubscription = {
-    users_id: "",
-    subscriptions_id: "",
-    start_date: formattedDate, // If no start date is given todays date is set YYYY/MM/DD
-    discount_active: false,
-  }
-  const [newSubscription, setNewSubscription] = useState(initialSubscription)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,6 +33,7 @@ const DashboardScreen = ({ session }) => {
       if (authUser) fetchServices()
     }
     fetchUser()
+    console.log(services)
   }, [])
 
   const getUser = async () => {
@@ -54,34 +50,6 @@ const DashboardScreen = ({ session }) => {
       .select("*")
     if (services) setServices(services)
     if (error) Alert.alert(error.message)
-  }
-
-  const fetchSubscriptions = async (serviceId) => {
-    const { data: subscriptions, error } = await supabase
-      .from("subscriptions")
-      .select("id, name, price")
-      .eq("services_id", serviceId)
-    if (subscriptions) setFetchedSubscriptions(subscriptions)
-    if (error) Alert.alert(error.message)
-  }
-
-  const updateSubscription = (userId, subscriptionId) => {
-    const updatedSubscription = {
-      ...initialSubscription,
-      users_id: userId,
-      subscriptions_id: subscriptionId,
-    }
-    setNewSubscription(updatedSubscription)
-  }
-
-  const addUserSubscription = async (subscription) => {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from("users_subscriptions")
-      .insert([subscription])
-    if (!error) console.log("Successfully updated!")
-    if (error) Alert.alert(error.message)
-    setLoading(false)
   }
 
   const logout = async () => {
@@ -107,43 +75,51 @@ const DashboardScreen = ({ session }) => {
     setLoading(false)
   }
 
+  //   const renderServiceCards = ({ item }) => {
+  //     return (
+  //       <CustomCard
+  //         text={item.name}
+  //         btnType="SECONDARY"
+  //         onPress={() =>
+  //           navigation.navigate("ProductScreen", {
+  //             name: item.name,
+  //             serviceId: item.id,
+  //           })
+  //         }
+  //       />
+  //     )
+  //   }
+
   return (
     <View style={styles.root}>
       <Text style={styles.heading}>
         Welcome user: {loggedInUser.first_name}
       </Text>
       {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
-      <>
+      <ScrollView style={styles.serviceScroll} horizontal>
         {services &&
           services.map((service, index) => (
-            <CustomButton
+            <CustomCard
               text={service.name}
               key={index}
               btnType="SECONDARY"
-              onPress={() => {
-                fetchSubscriptions(service.id)
-              }}></CustomButton>
+              onPress={() =>
+                navigation.navigate("ProductScreen", {
+                  name: service.name,
+                  serviceId: service.id,
+                })
+              }
+            />
           ))}
-      </>
-      <>
-        {fetchedSubscriptions &&
-          fetchedSubscriptions.map((sub, index) => (
-            <Pressable
-              key={index}
-              onPress={() => setSelectedSubscriptionId(sub.id)}>
-              <Text>{sub.name}</Text>
-            </Pressable>
-          ))}
-      </>
+      </ScrollView>
 
-      {/* <CustomButton
-        text="Update Subscription"
-        onPress={() => updateSubscription(authUser.id, selectedSubscription)}
-      /> */}
-
-      {/* <CustomButton
-        text="Add Subscription"
-        onPress={() => addUserSubscription(newSubscription)}
+      {/* ----- Replace ScrollView with FlatList for Performance reasons -----*/}
+      {/* <FlatList
+        style={styles.ScrollView}
+        horizontal
+        data={services}
+        keyExtractor={(services, index) => index.toString()}
+        renderItem={({ item }) => renderServiceCards(item)}
       /> */}
 
       <CustomButton
@@ -179,15 +155,20 @@ const DashboardScreen = ({ session }) => {
 
 const styles = StyleSheet.create({
   root: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: 8,
     flex: 1,
-    alignItems: "start",
-    padding: 20,
     backgroundColor: "orangered",
   },
   heading: {
-    flex: 1,
-    textAlign: "start",
     fontSize: 10,
+  },
+  serviceScroll: {
+    paddingLeft: 16,
+    width: "100%",
+    // height: 100,
+    flexGrow: 0,
   },
 })
 
