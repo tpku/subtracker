@@ -27,14 +27,15 @@ const SignupScreen = () => {
   const { height } = useWindowDimensions()
 
   const onSignupPressed = async (email, password) => {
+    setLoading(true)
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     })
-    if (data) console.log(data)
-
-    console.warn("Sign up pressed")
+    if (!error && data)
+      console.log("Registrering godkänd. Bekräfta via angiven e-post")
     if (error) Alert.alert(error.message)
+    setLoading(false)
   }
 
   return (
