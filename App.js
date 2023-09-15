@@ -10,6 +10,8 @@ import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import LoginScreen from "./src/screens/LoginScreen"
 import DashboardScreen from "./src/screens/DashboardScreen"
 import ProductScreen from "./src/screens/ProductScreen"
+import StartScreen from "./src/screens/StartScreen/StartScreen"
+import SignupScreen from "./src/screens/SignupScreen/SignupScreen"
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -39,9 +41,28 @@ export default function App() {
             name="Dashboard"
             component={DashboardScreen}
             session={session}
+            options={{ title: "The Dashboard" }}
           />
         ) : (
-          <Stack.Screen name="Loginscreen" component={LoginScreen} />
+          <>
+            <Stack.Screen
+              name="Startscreen"
+              component={StartScreen}
+              options={{
+                title: "Startscreen. Not signed up/logged in.",
+              }}
+            />
+            <Stack.Screen
+              name="Loginscreen"
+              component={LoginScreen}
+              options={{ title: "Login screen - not final" }}
+            />
+            <Stack.Screen
+              name="Signupscreen"
+              component={SignupScreen}
+              options={{ title: "Signup screen - not final" }}
+            />
+          </>
         )}
         <Stack.Screen name="ProductScreen" component={ProductScreen} />
       </Stack.Navigator>
