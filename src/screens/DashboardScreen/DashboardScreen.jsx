@@ -13,8 +13,6 @@ const DashboardScreen = ({ session }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
   const [services, setServices] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState({})
 
@@ -33,7 +31,6 @@ const DashboardScreen = ({ session }) => {
       if (authUser) fetchServices()
     }
     fetchUser()
-    console.log(services)
   }, [])
 
   const getUser = async () => {
@@ -59,22 +56,6 @@ const DashboardScreen = ({ session }) => {
     setLoading(false)
   }
 
-  // Update user name in "public.users" if "uuid.id = users.id"  - MOVE TO USER SETTINGS SCREEN WITH CORRECT PROPS AND FETCHES
-  const updateUserName = async (firstName, lastName) => {
-    setLoading(true)
-    let updateData = {}
-    if (firstName) updateData.first_name = firstName
-    if (lastName) updateData.last_name = lastName
-    const { error } = await supabase
-      .from("users")
-      .update(updateData)
-      .eq("id", authUser.id)
-      .select("*")
-    if (!error) console.log("Successfully updated!")
-    if (error) Alert.alert(error)
-    setLoading(false)
-  }
-
   //   const renderServiceCards = ({ item }) => {
   //     return (
   //       <CustomCard
@@ -96,6 +77,12 @@ const DashboardScreen = ({ session }) => {
         Welcome user: {loggedInUser.first_name}
       </Text>
       {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
+      {/* Temporary button */}
+      <CustomButton
+        text="Profile"
+        onPress={() => navigation.navigate("UserAccountScreen")}
+      />
+      <InputField placeholder="Search" />
       <ScrollView style={styles.serviceScroll} horizontal>
         {services &&
           services.map((service, index) => (
@@ -130,22 +117,6 @@ const DashboardScreen = ({ session }) => {
         isLoggedIn={"loggedIn"}
       />
 
-      {/* Update User information - MOVE TO USER SETTINGS SCREEN WITH CORRECT PROPS AND FETCHES */}
-      {/* <InputField
-        placeholder="First name"
-        value={firstName}
-        setValue={setFirstName}
-      />
-      <InputField
-        placeholder="Last name"
-        value={lastName}
-        setValue={setLastName}
-      />
-      <CustomButton
-        text="Update name"
-        onPress={() => updateUserName(firstName, lastName)}
-      /> */}
-
       <View>
         <Spinner visible={loading} />
       </View>
@@ -159,7 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     rowGap: 8,
     flex: 1,
-    backgroundColor: "orangered",
+    backgroundColor: "#3693CF",
   },
   heading: {
     fontSize: 10,
