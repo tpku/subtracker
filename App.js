@@ -10,8 +10,8 @@ import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import LoginScreen from "./src/screens/LoginScreen"
 import DashboardScreen from "./src/screens/DashboardScreen"
 import ProductScreen from "./src/screens/ProductScreen"
-import StartScreen from "./src/screens/StartScreen/StartScreen"
-import SignupScreen from "./src/screens/SignupScreen/SignupScreen"
+import StartScreen from "./src/screens/StartScreen"
+import SignupScreen from "./src/screens/SignupScreen"
 
 export default function App() {
   const [session, setSession] = useState(null)

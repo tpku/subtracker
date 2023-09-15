@@ -46,17 +46,6 @@ const LoginScreen = () => {
     setLoading(false)
   }
 
-  const onSignupPressed = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
-    if (data) console.log(data)
-
-    console.warn("Sign up pressed")
-    if (error) Alert.alert(error.message)
-  }
-
   const onRetrievePasswordPress = (content) => {
     console.warn("Retrieve password pressed")
   }
@@ -86,14 +75,9 @@ const LoginScreen = () => {
         setValue={setPassword}
         isPassword
       />
-
       <CustomButton
         text="Login"
         onPress={() => onLoginPressed(email, password)}
-      />
-      <CustomButton
-        text="Sign up"
-        onPress={() => onSignupPressed(email, password)}
         btnType={btn["2nd"]}
       />
       <CustomButton
@@ -121,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 20,
-    backgroundColor: "orangered",
+    backgroundColor: "#3693CF",
   },
   logo: {
     width: "70%",
