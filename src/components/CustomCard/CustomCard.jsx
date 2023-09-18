@@ -26,13 +26,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
-
-    // boxShadowRadius: 5,
-    // boxShadowOffset: {
-    //   width: 2,
-    //   height: 4,
-    // },
-    // boxShadowColor: "#0000001b",
   },
 
   container_PRIMARY: {
@@ -48,6 +41,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     color: "beige",
+    textTransform: "capitalize",
   },
 
   text_PRIMARY: {

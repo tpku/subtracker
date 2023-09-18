@@ -30,18 +30,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
     borderColor: "#f3f3f3",
-    // borderWidth: 2,
-
-    boxShadowRadius: 5,
-    boxShadowOffset: {
-      width: 2,
-      height: 4,
-    },
-    boxShadowColor: "#0000001b",
+    borderWidth: 1,
   },
 
   container_PRIMARY: {
-    backgroundColor: "#3693CF",
+    backgroundColor: "#3693cf",
   },
 
   container_SECONDARY: {
@@ -52,6 +45,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff44009e",
     borderColor: "#FF69B4",
     borderWidth: 1,
+  },
+
+  container_ERROR: {
+    backgroundColor: "#999fa3",
+    borderColor: "#ff0000",
+    borderWidth: 1,
+    pointerEvents: "none",
   },
 
   text: {
@@ -66,6 +66,10 @@ const styles = StyleSheet.create({
 
   text_TERTIARY: {
     color: "#FF69B4",
+  },
+
+  text_ERROR: {
+    color: "#bb3a40",
   },
   loggedIn: {
     display: "flex",

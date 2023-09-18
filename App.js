@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react"
-// This is from the React Navigation pack:
+import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import supabase from "./src/lib/initSupabase"
-import { StatusBar } from "expo-status-bar"
-import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native"
-
 import LoginScreen from "./src/screens/LoginScreen"
 import DashboardScreen from "./src/screens/DashboardScreen"
 import ProductScreen from "./src/screens/ProductScreen"
@@ -17,34 +15,47 @@ import UserSettingsScreen from "./src/screens/UserSettingsScreen"
 
 export default function App() {
   const [session, setSession] = useState(null)
-  // console.log(session);
+  const Stack = createNativeStackNavigator()
+  const Tab = createBottomTabNavigator()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
-
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
   }, [])
 
-  // Creates the stack the screens will fit into:
-  const Stack = createNativeStackNavigator()
-
   return (
     <NavigationContainer styles={styles.root}>
-      <Stack.Navigator
-      // initialRouteName={session && session.user ? "Dashboard" : "Loginscreen"}
-      // screenOptions={{ headerShown: false }}
-      >
+      <Stack.Navigator>
         {session && session.user ? (
-          <Stack.Screen
-            name="Dashboard"
-            component={DashboardScreen}
-            session={session}
-            options={{ title: "The Dashboard" }}
-          />
+          <>
+            <Stack.Screen
+              name="Tab"
+              options={{ headerShown: false }}
+              children={() => (
+                <Tab.Navigator
+                // screenOptions={{
+                //   tabBarIconStyle: { display: "none" },
+                // }}
+                >
+                  <Tab.Screen name="Hem" component={DashboardScreen} />
+                  <Tab.Screen name="Profil" component={UserAccountScreen} />
+                  <Tab.Screen
+                    options={{
+                      tabBarIconStyle: { display: "none" },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarButton: () => null,
+                    }}
+                    name="ProductScreen"
+                    component={ProductScreen}
+                  />
+                </Tab.Navigator>
+              )}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen
@@ -66,8 +77,6 @@ export default function App() {
             />
           </>
         )}
-        <Stack.Screen name="ProductScreen" component={ProductScreen} />
-        <Stack.Screen name="UserAccountScreen" component={UserAccountScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
