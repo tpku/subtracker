@@ -24,24 +24,25 @@ const ProfileImageHandler = () => {
     }
   }
 
-  useEffect(() => {
-    fetchUser()
-  })
+  // Function for fetching the profile image - MV
+  const fetchProfileImage = async () => {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .list(`${userId}/`)
 
-  // const uploadImage = async () => {
-  //   let imageFile = selectedImage.assets[0].uri
+    if (error) {
+      Alert.alert("Något gick fel vid bildhämtning", error.message)
+    } else if (data.length > 0) {
+      // Sorts out / defines the newest upload in the database
+      const newestImage = data.reduce((prev, current) => {
+        return new Date(prev.updated_at) > new Date(current.updated_at)
+          ? prev
+          : current
+      })
 
-  //   const { data, error } = await supabase.storage
-  //     .from("avatars")
-  //     .upload(`${userId}/`, imageFile)
-
-  //   if (data) {
-  //     console.log("There is data!")
-  //     console.log(data)
-  //   } else {
-  //     Alert.alert(error.message)
-  //   }
-  // }
+      setProfileImage(newestImage)
+    }
+  }
 
   // Function for picking an image from local (phone) gallery - MV
   const pickProfileImage = async () => {
@@ -54,50 +55,65 @@ const ProfileImageHandler = () => {
 
     if (!imageResult.canceled) {
       const imageFile = imageResult.assets[0].uri
-      setProfileImage(
-        imageFile,
-      ) /* This format works to display Base64 images */
+      // setProfileImage(
+      //   imageFile,
+      // ) /* This format works to display Base64 images */
 
       // Decodes from Base64 file data - MV
       const decodedImageFile = decode(imageFile)
-      console.log(decodedImageFile)
 
       const { data, error } = await supabase.storage
         .from("avatars")
         .upload(`${userId}/${imageFile.split("/").pop()}`, decodedImageFile, {
           contentType: ["image/png", "image/jpeg"],
+          upsert: true,
         })
 
-      if (data) {
-        console.log("There is data!")
-        console.log(data)
-      } else {
+      if (error) {
         Alert.alert(error.message)
       }
-
-      // setProfileImage(selectedImage.assets[0].uri)
-      // const imageFile = selectedImage.assets[0].uri
-      // const { error } = await supabase.storage
-      //   .from("avatars")
-      //   .upload(`${userId}/`, imageFile)
-      // if (error) {
-      //   Alert.alert("Något gick fel vid uppladdning", error.message)
-      // } else {
-      //   fetchProfileImage()
-      // }
     }
+    fetchProfileImage()
   }
+
+  // Function to set the data URI based on image type
+  const getImageUri = (imageType, imageBase64) => {
+    console.log("Image Type:", imageType) // Log imageType
+    console.log("Image Base64:", imageBase64) // Log imageBase64
+
+    if (imageType && imageType.startsWith("image/")) {
+      return `data:${imageType};base64,${imageBase64}`
+    }
+    // Handle other image types as needed
+    return null // Default fallback
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
+  console.log("Profile Image:", profileImage)
+  console.log(
+    "Image URL:",
+    getImageUri(profileImage?.metadata?.mimetype, profileImage?.name),
+  )
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {
         <Pressable onPress={pickProfileImage}>
-          {profileImage ? (
+          {profileImage && (
             <Image
-              source={{ uri: profileImage }}
+              source={{
+                uri: getImageUri(
+                  profileImage?.metadata?.mimetype,
+                  profileImage?.name,
+                ),
+              }}
               style={{ width: imageSize, height: imageSize }}
             />
-          ) : (
+          )}
+          {!profileImage && (
             <View
               style={{
                 width: imageSize,
