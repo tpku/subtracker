@@ -16,6 +16,9 @@ const DashboardScreen = ({ session }) => {
   const [services, setServices] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState("")
   const [connectedServices, setConnectedServices] = useState([])
+  const [toggleTotal, setToggleTotal] = useState(true)
+  const [searchKey, setSearchKey] = useState("")
+  const [resetServices, setResetServices] = useState("")
 
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${
@@ -30,15 +33,31 @@ const DashboardScreen = ({ session }) => {
       setAuthUser(user.id)
       getUser()
       if (authUser) fetchServices()
+      fetchUserSubscriptions(user.id)
     }
     fetchUser()
   }, [])
+
+  useEffect(() => {
+    const searchResult = []
+    if (services && searchKey !== "") {
+      for (let i = 0; i < services.length; i++) {
+        const result = services[i]
+        if (result.name.includes(searchKey)) {
+          searchResult.push(result)
+          services.splice(i, 1)
+          i--
+        }
+      }
+      services.unshift(...searchResult)
+    }
+  }, [searchKey])
 
   const getUser = async () => {
     setLoading(true)
     const { data: user, error } = await supabase
       .from("users")
-      .select("first_name") // Should we change the select to name only or do we need the whole user object later?
+      .select("first_name")
     if (user) setLoggedInUser(user[0].first_name)
     if (error) Alert.alert(error.message)
     setLoading(false)
@@ -49,66 +68,60 @@ const DashboardScreen = ({ session }) => {
       .from("services")
       .select("*")
     if (services) setServices(services)
+    if (services) setResetServices(services)
     if (error) Alert.alert(error.message)
   }
 
   const fetchUserSubscriptions = async (user) => {
+    // const activeSubscriptions = {
+    //   service_id: "",
+    //   service_name: "",
+    //   subscription_id: "",
+    //   subscription_name: "",
+    //   subscription_price: "",
+    //   //   subscription_start: "",
+    //   //   subscription_duration: "",
+    // }
     const { data: users_subscriptions, error } = await supabase
       .from("users_subscriptions")
-      .select("subscriptions_id")
+      .select(
+        `
+        subscriptions:subscriptions_id (name, price, services_id),
+        services:services_id(id, name)
+      `,
+      )
       .eq("users_id", user)
-
-    if (users_subscriptions) {
-      const activeSubscriptions = []
-      for (let sub of users_subscriptions) {
-        const { data: subscriptions, error } = await supabase
-          .from("subscriptions")
-          .select("name, price, services_id")
-          .eq("id", sub.subscriptions_id)
-
-        if (subscriptions) {
-          for (let subscription of subscriptions) {
-            const { data: services, error } = await supabase
-              .from("services")
-              .select("name")
-              .eq("id", subscription.services_id)
-
-            if (services) {
-              subscription.service_name = services[0].name
-            }
-            activeSubscriptions.push(subscription)
-          }
-        }
-      }
-      //   console.log(activeSubscriptions)
-      setConnectedServices(activeSubscriptions)
-    }
+    if (users_subscriptions) setConnectedServices(users_subscriptions)
+    // if (users_subscriptions) console.log(users_subscriptions)
     if (error) console.error(error.message)
     if (error) Alert.alert(error.message)
   }
 
-  const logout = async () => {
-    setLoading(true)
-    const { error } = await supabase.auth.signOut()
-    if (error) Alert.alert(error.message)
-    setLoading(false)
+  const calculateTotalPrice = (subPrices) => {
+    let totalPrice = 0
+    for (const subPrice of subPrices) {
+      if (subPrice.subscriptions && subPrice.subscriptions.price) {
+        totalPrice += subPrice.subscriptions.price
+      }
+    }
+
+    return totalPrice
   }
 
   return (
     <View style={styles.root}>
       <Text style={styles.heading}>Welcome user: {loggedInUser}</Text>
       {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
-      <CustomButton
-        text="Test Button"
-        onPress={() => fetchUserSubscriptions(authUser)}
+
+      <Text>Lägg till tjänst</Text>
+      {/* <InputField placeholder="Search" /> */}
+      <InputField
+        placeholder="Search"
+        value={searchKey}
+        setValue={setSearchKey}
+        // onChange={setSearchKey(value)}
       />
 
-      {/* Temporary button */}
-      <CustomButton
-        text="Profile"
-        onPress={() => navigation.navigate("UserAccountScreen")}
-      />
-      <InputField placeholder="Search" />
       <ScrollView style={styles.serviceScroll} horizontal>
         {services &&
           services.map((service, index) => (
@@ -125,27 +138,32 @@ const DashboardScreen = ({ session }) => {
             />
           ))}
       </ScrollView>
-      <CustomButton
-        text="Logout"
-        onPress={logout}
-        btnType={"SECONDARY"}
-        textType="TERTIARY"
-        isLoggedIn={"loggedIn"}
-      />
 
-      <ScrollView style={styles.connectedServiceScroll} horizontal>
+      <CustomButton
+        text={toggleTotal ? "Månad" : "År"}
+        onPress={() => setToggleTotal(!toggleTotal)}
+      />
+      {toggleTotal ? (
+        <Text>Totalt: {calculateTotalPrice(connectedServices)} kr</Text>
+      ) : (
+        <Text>Totalt: {calculateTotalPrice(connectedServices) * 12} kr</Text>
+      )}
+
+      <Text>Dina tjänster</Text>
+      <ScrollView style={styles.serviceScroll} horizontal>
         {connectedServices &&
           connectedServices.map((service, index) => (
             <CustomCard
-              text={service.service_name}
+              text={service.services.name}
               key={index}
               btnType="SECONDARY"
-              //   onPress={() =>
-              //     navigation.navigate("ProductScreen", {
-              //       name: service.service_name,
-              //       serviceId: service.services_id,
-              //     })
-              //   }
+              onPress={() =>
+                navigation.navigate("ProductScreen", {
+                  name: service.services.name,
+                  serviceId: service.services.id,
+                  //   Flytta subscriptions fetch hit
+                })
+              }
             />
           ))}
       </ScrollView>
@@ -173,9 +191,6 @@ const styles = StyleSheet.create({
     width: "100%",
     // height: 100,
     flexGrow: 0,
-  },
-  connectedServiceScroll: {
-    padding: 16,
   },
 })
 

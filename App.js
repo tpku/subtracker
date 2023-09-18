@@ -34,10 +34,24 @@ export default function App() {
           <>
             <Stack.Screen
               name="Tab"
+              options={{ headerShown: false }}
               children={() => (
-                <Tab.Navigator>
+                <Tab.Navigator
+                // screenOptions={{
+                //   tabBarIconStyle: { display: "none" },
+                // }}
+                >
                   <Tab.Screen name="Hem" component={DashboardScreen} />
                   <Tab.Screen name="Profil" component={UserAccountScreen} />
+                  <Tab.Screen
+                    options={{
+                      tabBarIconStyle: { display: "none" },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarButton: () => null,
+                    }}
+                    name="ProductScreen"
+                    component={ProductScreen}
+                  />
                 </Tab.Navigator>
               )}
             />
@@ -63,7 +77,6 @@ export default function App() {
             />
           </>
         )}
-        <Stack.Screen name="ProductScreen" component={ProductScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
