@@ -3,11 +3,11 @@ import { Image, View, Pressable, Text, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 
 import supabase from "../../lib/initSupabase"
-import { decode } from "base64-arraybuffer"
+import { decode, encode } from "base64-arraybuffer"
 
 const ProfileImageHandler = () => {
-  const [profileImage, setProfileImage] = useState(null)
   const [userId, setUserId] = useState(null)
+  const [profileImage, setProfileImage] = useState(null)
   const imageSize = 150
 
   // Checks for the authenticated user - MV
@@ -45,25 +45,28 @@ const ProfileImageHandler = () => {
 
   // Function for picking an image from local (phone) gallery - MV
   const pickProfileImage = async () => {
-    const selectedImage = await ImagePicker.launchImageLibraryAsync({
+    const imageResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     })
 
-    if (!selectedImage.canceled) {
-      let imageFile = selectedImage.assets[0].uri
+    if (!imageResult.canceled) {
+      const imageFile = imageResult.assets[0].uri
+      setProfileImage(
+        imageFile,
+      ) /* This format works to display Base64 images */
+
+      // Decodes from Base64 file data - MV
+      const decodedImageFile = decode(imageFile)
+      console.log(decodedImageFile)
 
       const { data, error } = await supabase.storage
         .from("avatars")
-        .upload(`${userId}/${imageFile}`, decode("base64FileData"))
-
-      // const { data, error } = await supabase.storage
-      //   .from("avatars")
-      //   .upload(`${userId}/`, imageFile, decode("base64FileData"), {
-      //     contentType: "image/png",
-      //   })
+        .upload(`${userId}/${imageFile.split("/").pop()}`, decodedImageFile, {
+          contentType: ["image/png", "image/jpeg"],
+        })
 
       if (data) {
         console.log("There is data!")
@@ -71,6 +74,7 @@ const ProfileImageHandler = () => {
       } else {
         Alert.alert(error.message)
       }
+
       // setProfileImage(selectedImage.assets[0].uri)
       // const imageFile = selectedImage.assets[0].uri
       // const { error } = await supabase.storage
