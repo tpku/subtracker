@@ -5,6 +5,12 @@ import supabase from "../../lib/initSupabase"
 import Spinner from "react-native-loading-spinner-overlay"
 import CustomButton from "../../components/CustomButton/CustomButton"
 
+// TODO: checkUserSubscriptions. Add check: services_id. Check both sub and service limiting database update.
+// TODO: add boolean with checkbox to updateSubscription to check for available user discounts
+// TODO: Add calendar for start_date and discount. And function to check duration for each invoice and discount.
+// TODO: Move most of the code to ProductEditScreen which will be available through ProductViewScreen
+// TODO: Create ProductViewScreen. Display Service image, name, active subscription, payment details and navigation.
+
 const ProductScreen = ({ route }) => {
   const { name, serviceId } = route.params
   const [loading, setLoading] = useState(false)
@@ -55,6 +61,7 @@ const ProductScreen = ({ route }) => {
   }
 
   // Update initial subscriptions object
+  // FIXME: Boolean: discounts and Date: Calendar
   const updateSubscription = async (userId, subscriptionId, serviceId) => {
     // const updatedSubscription = {
     //   ...initialSubscription,
@@ -95,6 +102,7 @@ const ProductScreen = ({ route }) => {
     }
   }
 
+  // FIXME: service_id check
   const checkUserSubscriptions = async (userId, selectedSubId) => {
     const { data: subscriptions_id, error } = await supabase
       .from("users_subscriptions")

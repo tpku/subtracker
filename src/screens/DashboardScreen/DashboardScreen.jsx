@@ -72,6 +72,19 @@ const DashboardScreen = ({ session }) => {
     if (error) Alert.alert(error.message)
   }
 
+  const checkUserService = async (userId, serviceId) => {
+    const { data: service, error } = await supabase
+      .from("users_subscriptions")
+      .select("services_id", serviceId)
+      .eq("users_id", userId)
+      .eq("services_id", serviceId)
+    if (service && service.length === 0) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   const fetchUserSubscriptions = async (user) => {
     // const activeSubscriptions = {
     //   service_id: "",
@@ -129,12 +142,14 @@ const DashboardScreen = ({ session }) => {
               text={service.name}
               key={index}
               btnType="SECONDARY"
-              onPress={() =>
-                navigation.navigate("ProductScreen", {
+              onPress={async () => {
+                const isActive = await checkUserService(authUser, service.id)
+                navigation.navigate("ProductViewScreen", {
                   name: service.name,
                   serviceId: service.id,
+                  isActive: isActive,
                 })
-              }
+              }}
             />
           ))}
       </ScrollView>

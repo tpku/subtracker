@@ -12,6 +12,7 @@ import StartScreen from "./src/screens/StartScreen"
 import SignupScreen from "./src/screens/SignupScreen"
 import UserAccountScreen from "./src/screens/UserAccountScreen"
 import UserSettingsScreen from "./src/screens/UserSettingsScreen"
+import ProductViewScreen from "./src/screens/ProductViewScreen"
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -51,6 +52,15 @@ export default function App() {
                     }}
                     name="ProductScreen"
                     component={ProductScreen}
+                  />
+                  <Tab.Screen
+                    options={{
+                      tabBarIconStyle: { display: "none" },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarButton: () => null,
+                    }}
+                    name="ProductViewScreen"
+                    component={ProductViewScreen}
                   />
                 </Tab.Navigator>
               )}
