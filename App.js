@@ -39,12 +39,25 @@ export default function App() {
       // screenOptions={{ headerShown: false }}
       >
         {session && session.user ? (
-          <Stack.Screen
-            name="Dashboard"
-            component={DashboardScreen}
-            session={session}
-            options={{ title: "The Dashboard" }}
-          />
+          <>
+            <Stack.Screen
+              name="Dashboard"
+              component={DashboardScreen}
+              session={session}
+              options={{ title: "The Dashboard" }}
+            />
+            {/* Moved these two screens inside the session. Logout now works on them! - MV */}
+            <Stack.Screen name="ProductScreen" component={ProductScreen} />
+            <Stack.Screen
+              name="UserAccountScreen"
+              component={UserAccountScreen}
+            />
+            {/* Added the page below to work with the profile picture - MV */}
+            <Stack.Screen
+              name="UserSettingsScreen"
+              component={UserSettingsScreen}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen
@@ -66,8 +79,9 @@ export default function App() {
             />
           </>
         )}
+        {/* These two screens are now moved inside the session.
         <Stack.Screen name="ProductScreen" component={ProductScreen} />
-        <Stack.Screen name="UserAccountScreen" component={UserAccountScreen} />
+        <Stack.Screen name="UserAccountScreen" component={UserAccountScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   )

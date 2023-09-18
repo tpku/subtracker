@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { View, Text, Alert, StyleSheet } from "react-native"
+import { useNavigation } from "@react-navigation/native" /* Added this to be able to reach the UserSettingsScreen - MV */
 
 import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
@@ -7,6 +8,8 @@ import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
 
 const UserAccountScreen = ({ session }) => {
+  const navigation =
+    useNavigation() /* Added this to be able to reach the UserSettingsScreen - MV */
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
   const [firstName, setFirstName] = useState("")
@@ -92,6 +95,13 @@ const UserAccountScreen = ({ session }) => {
         btnType={"SECONDARY"}
         textType="TERTIARY"
         isLoggedIn={"loggedIn"}
+      />
+      {/* This below is for testing. Will be changed/removed eventually. - MV */}
+      <Text></Text>
+      <Text>Temporary button "Edit profile settings"</Text>
+      <CustomButton
+        text="Edit profile settings"
+        onPress={() => navigation.navigate("UserSettingsScreen")}
       />
       <View>
         <Spinner visible={loading} />

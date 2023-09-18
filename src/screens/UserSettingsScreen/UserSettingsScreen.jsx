@@ -4,6 +4,10 @@ import { View, Text, Alert, StyleSheet } from "react-native"
 import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
 import InputField from "../../components/InputField/InputField"
+
+// For handling profile image. Might delete it later - MV
+// import ProfileImageHandler from "../../components/ProfileImageHandler"
+import ProfileImageHandler_test from "../../components/ProfileImageHandler/ProfileImageHandler_test"
 import Spinner from "react-native-loading-spinner-overlay"
 
 const UserSettingsScreen = ({ session }) => {
@@ -56,6 +60,12 @@ const UserSettingsScreen = ({ session }) => {
 
   return (
     <View style={styles.root}>
+      {/* {authUser ? (
+        <ProfileImageHandler user={authUser} />
+      ) : (
+        <Text>Loading user data...</Text>
+      )} */}
+      <ProfileImageHandler_test />
       <InputField
         placeholder="Förnamn"
         value={firstName}
