@@ -165,6 +165,7 @@ const DashboardScreen = ({ session }) => {
       )}
 
       <Text>Dina tjänster</Text>
+      {/* FIXME: update navigation and variables like buttom above */}
       <ScrollView style={styles.serviceScroll} horizontal>
         {connectedServices &&
           connectedServices.map((service, index) => (

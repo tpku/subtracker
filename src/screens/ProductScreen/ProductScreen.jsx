@@ -9,10 +9,10 @@ import CustomButton from "../../components/CustomButton/CustomButton"
 // TODO: add boolean with checkbox to updateSubscription to check for available user discounts
 // TODO: Add calendar for start_date and discount. And function to check duration for each invoice and discount.
 // TODO: Move most of the code to ProductEditScreen which will be available through ProductViewScreen
-// TODO: Create ProductViewScreen. Display Service image, name, active subscription, payment details and navigation.
+// TODO: Create ProductViewScreen. Display Service image, active subscription, payment details.
 
 const ProductScreen = ({ route }) => {
-  const { name, serviceId } = route.params
+  const { name, serviceId, subscriptions } = route.params
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState([])
   const [fetchedSubscriptions, setFetchedSubscriptions] = useState("")
@@ -38,9 +38,9 @@ const ProductScreen = ({ route }) => {
       } = await supabase.auth.getUser()
       setUserId(user.id)
     }
-    fetchSubscriptions(serviceId)
     fetchUser()
     setConfirmSubscriptionId(true)
+    setFetchedSubscriptions(subscriptions)
   }, [serviceId])
 
   // Check if user already subscribe on selected service subscription
@@ -49,16 +49,6 @@ const ProductScreen = ({ route }) => {
       checkUserSubscriptions(userId, selectedSubscriptionId)
     }
   }, [selectedSubscriptionId])
-
-  // Fetch matching Subscriptions from Supabase
-  const fetchSubscriptions = async (serviceId) => {
-    const { data: subscriptions, error } = await supabase
-      .from("subscriptions")
-      .select("id, name, price")
-      .eq("services_id", serviceId)
-    if (subscriptions) setFetchedSubscriptions(subscriptions)
-    if (error) Alert.alert(error.message)
-  }
 
   // Update initial subscriptions object
   // FIXME: Boolean: discounts and Date: Calendar
