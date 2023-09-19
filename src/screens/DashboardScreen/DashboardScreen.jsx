@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, Alert, StyleSheet, ScrollView } from "react-native"
+import {
+  View,
+  Text,
+  Alert,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+} from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { FlatList } from "react-native"
 
@@ -63,14 +70,26 @@ const DashboardScreen = ({ session }) => {
     setLoading(false)
   }
 
+  // TODO: Test make fetchServices return available subscriptions
   const fetchServices = async () => {
-    const { data: services, error } = await supabase
-      .from("services")
-      .select("*")
+    const { data: services, error } = await supabase.from("services").select(
+      `
+    id, name, subscriptions (*)
+      `,
+    )
     if (services) setServices(services)
     if (services) setResetServices(services)
     if (error) Alert.alert(error.message)
+    if (error) console.error(error.message)
   }
+  //   const fetchServices = async () => {
+  //     const { data: services, error } = await supabase
+  //       .from("services")
+  //       .select("*")
+  //     if (services) setServices(services)
+  //     if (services) setResetServices(services)
+  //     if (error) Alert.alert(error.message)
+  //   }
 
   const checkUserService = async (userId, serviceId) => {
     const { data: service, error } = await supabase
@@ -83,6 +102,61 @@ const DashboardScreen = ({ session }) => {
     } else {
       return true
     }
+  }
+
+  const getActiveSub = async (userId, serviceId) => {
+    const { data: service, error } = await supabase
+      .from("users_subscriptions")
+      .select(
+        `
+      subscriptions:subscriptions_id (name, price),
+      services:services_id
+      `,
+      )
+      .eq("users_id", userId)
+      .eq("services_id", serviceId)
+    if (service && service.length > 0) {
+      return service[0].subscriptions
+    } else if (error) {
+      Alert.alert(error.message)
+    } else {
+      return ""
+    }
+  }
+
+  const convertFetchObject = (inputObject) => {
+    const result = []
+    const servicePart = {}
+
+    inputObject.forEach((item) => {
+      const serviceId = item.services.id
+      const serviceName = item.services.name
+      const subscriptionName = item.subscriptions.name
+      const subscriptionPrice = item.subscriptions.price
+      const subscriptionDuration = item.subscriptions.duration
+
+      if (!servicePart[serviceId]) {
+        servicePart[serviceId] = {
+          id: serviceId,
+          name: serviceName,
+          subscriptions: [],
+        }
+      }
+
+      servicePart[serviceId].subscriptions.push({
+        id: servicePart[serviceId].subscriptions.length + 1,
+        name: subscriptionName,
+        price: subscriptionPrice,
+        duration: subscriptionDuration,
+        services_id: serviceId,
+      })
+    })
+
+    for (const key in servicePart) {
+      result.push(servicePart[key])
+    }
+
+    return result
   }
 
   const fetchUserSubscriptions = async (user) => {
@@ -99,13 +173,13 @@ const DashboardScreen = ({ session }) => {
       .from("users_subscriptions")
       .select(
         `
-        subscriptions:subscriptions_id (name, price, services_id),
+        subscriptions:subscriptions_id (*),
         services:services_id(id, name)
       `,
       )
       .eq("users_id", user)
-    if (users_subscriptions) setConnectedServices(users_subscriptions)
-    // if (users_subscriptions) console.log(users_subscriptions)
+    if (users_subscriptions)
+      setConnectedServices(convertFetchObject(users_subscriptions))
     if (error) console.error(error.message)
     if (error) Alert.alert(error.message)
   }
@@ -123,18 +197,17 @@ const DashboardScreen = ({ session }) => {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.heading}>Welcome user: {loggedInUser}</Text>
-      {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
+      <View style={styles.container}>
+        <Text style={styles.heading}>Welcome user: {loggedInUser}</Text>
+        {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
 
-      <Text>Lägg till tjänst</Text>
-      {/* <InputField placeholder="Search" /> */}
-      <InputField
-        placeholder="Search"
-        value={searchKey}
-        setValue={setSearchKey}
-        // onChange={setSearchKey(value)}
-      />
-
+        <Text>Lägg till tjänst</Text>
+        <InputField
+          placeholder="Search"
+          value={searchKey}
+          setValue={setSearchKey}
+        />
+      </View>
       <ScrollView style={styles.serviceScroll} horizontal>
         {services &&
           services.map((service, index) => (
@@ -144,46 +217,50 @@ const DashboardScreen = ({ session }) => {
               btnType="SECONDARY"
               onPress={async () => {
                 const isActive = await checkUserService(authUser, service.id)
+                const activeSub = await getActiveSub(authUser, service.id)
                 navigation.navigate("ProductViewScreen", {
                   name: service.name,
                   serviceId: service.id,
+                  activeService: service,
                   isActive: isActive,
+                  isActiveSubscription: activeSub,
                 })
               }}
             />
           ))}
       </ScrollView>
+      <View style={styles.container}>
+        <Pressable onPress={() => setToggleTotal(!toggleTotal)}>
+          <Text>{toggleTotal ? "Månad" : "År"}</Text>
+        </Pressable>
+        {toggleTotal ? (
+          <Text>Totalt: {calculateTotalPrice(connectedServices)} kr</Text>
+        ) : (
+          <Text>Totalt: {calculateTotalPrice(connectedServices) * 12} kr</Text>
+        )}
+        <Text>Dina tjänster</Text>
+      </View>
 
-      <CustomButton
-        text={toggleTotal ? "Månad" : "År"}
-        onPress={() => setToggleTotal(!toggleTotal)}
-      />
-      {toggleTotal ? (
-        <Text>Totalt: {calculateTotalPrice(connectedServices)} kr</Text>
-      ) : (
-        <Text>Totalt: {calculateTotalPrice(connectedServices) * 12} kr</Text>
-      )}
-
-      <Text>Dina tjänster</Text>
-      {/* FIXME: update navigation and variables like buttom above */}
       <ScrollView style={styles.serviceScroll} horizontal>
         {connectedServices &&
           connectedServices.map((service, index) => (
             <CustomCard
-              text={service.services.name}
+              text={service.name}
               key={index}
               btnType="SECONDARY"
-              onPress={() =>
-                navigation.navigate("ProductScreen", {
-                  name: service.services.name,
-                  serviceId: service.services.id,
-                  //   Flytta subscriptions fetch hit
+              onPress={async () => {
+                const isActive = await checkUserService(authUser, service.id)
+                navigation.navigate("ProductViewScreen", {
+                  name: service.name,
+                  serviceId: service.id,
+                  activeService: service,
+                  isActive: isActive,
+                  isActiveSubscription: service.subscriptions[0],
                 })
-              }
+              }}
             />
           ))}
       </ScrollView>
-
       <View>
         <Spinner visible={loading} />
       </View>
@@ -201,6 +278,10 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 10,
+  },
+  container: {
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   serviceScroll: {
     paddingLeft: 16,

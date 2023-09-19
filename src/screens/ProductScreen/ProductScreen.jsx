@@ -12,7 +12,7 @@ import CustomButton from "../../components/CustomButton/CustomButton"
 // TODO: Create ProductViewScreen. Display Service image, active subscription, payment details.
 
 const ProductScreen = ({ route }) => {
-  const { name, serviceId, subscriptions } = route.params
+  const { name, serviceId, isActive, subscriptions } = route.params
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState([])
   const [fetchedSubscriptions, setFetchedSubscriptions] = useState("")
@@ -45,8 +45,8 @@ const ProductScreen = ({ route }) => {
 
   // Check if user already subscribe on selected service subscription
   useEffect(() => {
-    if (selectedSubscriptionId != "") {
-      checkUserSubscriptions(userId, selectedSubscriptionId)
+    if (selectedSubscriptionId !== "") {
+      checkActiveServiceOnId(userId, serviceId)
     }
   }, [selectedSubscriptionId])
 
@@ -92,22 +92,39 @@ const ProductScreen = ({ route }) => {
     }
   }
 
-  // FIXME: service_id check
-  const checkUserSubscriptions = async (userId, selectedSubId) => {
+  const checkActiveServiceOnId = async (userId, selectedServiceId) => {
     const { data: subscriptions_id, error } = await supabase
       .from("users_subscriptions")
-      .select("subscriptions_id")
+      .select("*") // FIXME: Change select value?
       .eq("users_id", userId)
-      .eq("subscriptions_id", selectedSubId)
+      .eq("services_id", selectedServiceId)
     if (subscriptions_id && subscriptions_id.length === 0) {
       setConfirmSubscriptionId(true)
     } else {
-      // console.error("Du har redan denna tjänst!")
       setSelectedSubscriptionId("")
       setConfirmSubscriptionId(false)
     }
     if (error) console.error(error)
   }
+
+  // const checkUserSubscriptions = async (
+  //   userId,
+  //   selectedSubId,
+  // ) => {
+  //   const { data: subscriptions_id, error } = await supabase
+  //     .from("users_subscriptions")
+  //     .select("*")
+  //     .eq("users_id", userId)
+  //   // .eq("subscriptions_id", selectedSubId)
+  //   if (subscriptions_id && subscriptions_id.length === 0) {
+  //     setConfirmSubscriptionId(true)
+  //     setSelectedSubscriptionId(selectedSubId)
+  //   } else {
+  //     setSelectedSubscriptionId("")
+  //     setConfirmSubscriptionId(false)
+  //   }
+  //   if (error) console.error(error)
+  // }
 
   // Add the updated subscription object to users_subscriptions on Supabase
   const addUserSubscription = async (subscription) => {
@@ -126,6 +143,7 @@ const ProductScreen = ({ route }) => {
 
   return (
     <>
+      <Text>{isActive ? "Ändra tjänst" : "Lägg till tjänst"}</Text>
       <Text style={styles.heading}>{name}</Text>
 
       {fetchedSubscriptions &&
@@ -139,6 +157,7 @@ const ProductScreen = ({ route }) => {
           </Pressable>
         ))}
 
+      {/* TODO: Move to automated function */}
       <CustomButton
         text="Update Subscription"
         onPress={() =>

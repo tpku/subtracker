@@ -6,7 +6,8 @@ import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
 
 const ProductViewScreen = ({ route }) => {
-  const { name, serviceId, isActive } = route.params
+  const { name, serviceId, activeService, isActive, isActiveSubscription } =
+    route.params
   const navigation = useNavigation()
   const [userId, setUserId] = useState("")
   const [serviceIsActive, setServiceIsActive] = useState("")
@@ -21,18 +22,17 @@ const ProductViewScreen = ({ route }) => {
     }
     fetchUser()
     setServiceIsActive(isActive)
-    fetchSubscriptions(serviceId)
-  }, [userId, isActive, serviceId])
+    fetchSubscriptions(activeService.id)
+  }, [userId, isActive, activeService.id])
 
   // Fetch matching Subscriptions from Supabase
   const fetchSubscriptions = async (serviceId) => {
     const { data: subscriptions, error } = await supabase
       .from("subscriptions")
       .select("id, name, price")
-      .eq("services_id", serviceId)
+      .eq("services_id", activeService.id)
     if (subscriptions) {
       setFetchedSubscriptions(subscriptions)
-      console.log(subscriptions) // FIXME: remove
     }
     if (error) {
       Alert.alert(error.message)
@@ -43,16 +43,12 @@ const ProductViewScreen = ({ route }) => {
   return (
     <View>
       <Text>
-        {fetchedSubscriptions && fetchedSubscriptions.length > 0
-          ? `${name} "namn här"`
-          : ""}
+        {isActive
+          ? `${activeService.name}: ${isActiveSubscription.name}`
+          : `${activeService.name}`}
       </Text>
-      <Text>
-        {fetchedSubscriptions && fetchedSubscriptions.length > 0
-          ? `"pris här" / mån`
-          : ""}
-      </Text>
-      <Text>Prenumenation: {serviceIsActive ? "Aktiv" : "Inga tjänster"}</Text>
+      <Text>{isActive ? `${isActiveSubscription.price} kr / mån` : ""}</Text>
+      <Text>Prenumenation: {serviceIsActive ? "Aktiv" : "Ej ansluten"}</Text>
 
       <CustomButton
         text={serviceIsActive ? "Granska tjänst" : "Lägg till tjänst"}
