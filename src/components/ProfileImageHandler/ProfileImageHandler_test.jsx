@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { Image, View, Pressable, Text, Alert } from "react-native"
+
 import * as ImagePicker from "expo-image-picker"
+import * as FileSystem from "expo-file-system"
 
 import supabase from "../../lib/initSupabase"
 import { decode, encode } from "base64-arraybuffer"
@@ -68,18 +70,18 @@ const ProfileImageHandler = () => {
           contentType: ["image/png", "image/jpeg"],
           upsert: true,
         })
-
-      if (error) {
+      if (data) {
+        fetchProfileImage()
+      } else if (error) {
         Alert.alert(error.message)
       }
     }
-    fetchProfileImage()
   }
 
   // Function to set the data URI based on image type
   const getImageUri = (imageType, imageBase64) => {
-    console.log("Image Type:", imageType) // Log imageType
-    console.log("Image Base64:", imageBase64) // Log imageBase64
+    // console.log("Image Type:", imageType) // Log imageType
+    // console.log("Image Base64:", imageBase64) // Log imageBase64
 
     if (imageType && imageType.startsWith("image/")) {
       return `data:${imageType};base64,${imageBase64}`
@@ -105,10 +107,11 @@ const ProfileImageHandler = () => {
           {profileImage && (
             <Image
               source={{
-                uri: getImageUri(
-                  profileImage?.metadata?.mimetype,
-                  profileImage?.name,
-                ),
+                // uri: getImageUri(
+                //   profileImage.metadata.mimetype,
+                //   profileImage.name,
+                // ),
+                uri: "https://hsspcjlmxksnfzlifbml.supabase.co/storage/v1/object/public/avatars/bb4e13c0-569f-4dd3-924d-0e6bea237837/9k=",
               }}
               style={{ width: imageSize, height: imageSize }}
             />
