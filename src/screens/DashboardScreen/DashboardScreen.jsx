@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
+  Image,
+  useWindowDimensions,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { FlatList } from "react-native"
@@ -74,7 +76,7 @@ const DashboardScreen = ({ session }) => {
   const fetchServices = async () => {
     const { data: services, error } = await supabase.from("services").select(
       `
-    id, name, subscriptions (*)
+    id, name, url, image_name, subscriptions (*)
       `,
     )
     if (services) setServices(services)
@@ -214,6 +216,7 @@ const DashboardScreen = ({ session }) => {
             <CustomCard
               text={service.name}
               key={index}
+              imgSource={service.id - 1}
               btnType="SECONDARY"
               onPress={async () => {
                 const isActive = await checkUserService(authUser, service.id)
@@ -247,6 +250,7 @@ const DashboardScreen = ({ session }) => {
             <CustomCard
               text={service.name}
               key={index}
+              imgSource={service.id - 1}
               btnType="SECONDARY"
               onPress={async () => {
                 const isActive = await checkUserService(authUser, service.id)

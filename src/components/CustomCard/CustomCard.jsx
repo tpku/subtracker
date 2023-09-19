@@ -1,8 +1,35 @@
 import React from "react"
-import { View, Text, Button, StyleSheet, Pressable } from "react-native"
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+  Image,
+} from "react-native"
+
+import Logo1 from "../../../assets/logos/hbo.png"
+import Logo2 from "../../../assets/logos/netflix.png"
+import Logo3 from "../../../assets/logos/viaplay.png"
+import Logo4 from "../../../assets/logos/spotify.png"
+import Logo5 from "../../../assets/logos/primevideo.png"
+import Logo6 from "../../../assets/logos/disneyplus.png"
+import Logo7 from "../../../assets/logos/youtube.png"
+import Logo8 from "../../../assets/logos/discoveryplus.png"
+import Logo9 from "../../../assets/logos/teliaplay.png"
 
 const CustomCard = (props) => {
-  const { text, onPress, cardType = "PRIMARY", textType = "SECONDARY" } = props
+  const {
+    text,
+    imgSource,
+    onPress,
+    cardType = "PRIMARY",
+    textType = "SECONDARY",
+  } = props
+  const { height } = useWindowDimensions()
+
+  const Logos = [Logo1, Logo2, Logo3, Logo4, Logo5, Logo6, Logo7, Logo8, Logo9]
   return (
     <Pressable
       style={[
@@ -11,7 +38,12 @@ const CustomCard = (props) => {
         styles[`text_${textType}`],
       ]}
       onPress={onPress}>
-      <Text style={[styles.text, styles[`text_${textType}`]]}>{text}</Text>
+      {/* <Text style={[styles.text, styles[`text_${textType}`]]}>{text}</Text> */}
+      <Image
+        source={Logos[imgSource]}
+        style={[styles.logo, { height: height * 0.3 }]}
+        resizeMode="contain"
+      />
     </Pressable>
   )
 }
@@ -29,7 +61,7 @@ const styles = StyleSheet.create({
   },
 
   container_PRIMARY: {
-    backgroundColor: "#2E2E2E",
+    backgroundColor: "#000000",
   },
 
   container_SECONDARY: {
@@ -46,6 +78,11 @@ const styles = StyleSheet.create({
 
   text_PRIMARY: {
     color: "#f5f5dc",
+  },
+  logo: {
+    width: "80%",
+    maxWidth: 63,
+    maxHeight: 63,
   },
 })
 
