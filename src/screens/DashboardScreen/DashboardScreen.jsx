@@ -76,7 +76,7 @@ const DashboardScreen = ({ session }) => {
   const fetchServices = async () => {
     const { data: services, error } = await supabase.from("services").select(
       `
-    id, name, url, image_name, subscriptions (*)
+    id, name, url, image_name, subscriptions (*), users_subscriptions (*)
       `,
     )
     if (services) setServices(services)
@@ -129,10 +129,13 @@ const DashboardScreen = ({ session }) => {
   const convertFetchObject = (inputObject) => {
     const result = []
     const servicePart = {}
+    // console.log({ inputObject }) // FIXME: Remove log
 
     inputObject.forEach((item) => {
       const serviceId = item.services.id
       const serviceName = item.services.name
+      const serviceStartDate = item.start_date
+      const serviceDiscount = item.discount_active
       const subscriptionName = item.subscriptions.name
       const subscriptionPrice = item.subscriptions.price
       const subscriptionDuration = item.subscriptions.duration
@@ -141,6 +144,8 @@ const DashboardScreen = ({ session }) => {
         servicePart[serviceId] = {
           id: serviceId,
           name: serviceName,
+          start_date: serviceStartDate,
+          discount_active: serviceDiscount,
           subscriptions: [],
         }
       }
@@ -174,7 +179,7 @@ const DashboardScreen = ({ session }) => {
     const { data: users_subscriptions, error } = await supabase
       .from("users_subscriptions")
       .select(
-        `
+        `start_date, discount_active,
         subscriptions:subscriptions_id (*),
         services:services_id(id, name)
       `,
@@ -189,8 +194,8 @@ const DashboardScreen = ({ session }) => {
   const calculateTotalPrice = (subPrices) => {
     let totalPrice = 0
     for (const subPrice of subPrices) {
-      if (subPrice.subscriptions && subPrice.subscriptions.price) {
-        totalPrice += subPrice.subscriptions.price
+      if (subPrice.subscriptions && subPrice.subscriptions[0].price) {
+        totalPrice += subPrice.subscriptions[0].price
       }
     }
 
@@ -227,6 +232,9 @@ const DashboardScreen = ({ session }) => {
                   activeService: service,
                   isActive: isActive,
                   isActiveSubscription: activeSub,
+                  startDate: service.users_subscriptions[0]
+                    ? service.users_subscriptions[0].start_date
+                    : "",
                 })
               }}
             />
@@ -260,6 +268,7 @@ const DashboardScreen = ({ session }) => {
                   activeService: service,
                   isActive: isActive,
                   isActiveSubscription: service.subscriptions[0],
+                  startDate: service.start_date,
                 })
               }}
             />

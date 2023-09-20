@@ -4,10 +4,17 @@ import { useNavigation } from "@react-navigation/native"
 
 import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
+import CustomCard from "../../components/CustomCard"
 
 const ProductViewScreen = ({ route }) => {
-  const { name, serviceId, activeService, isActive, isActiveSubscription } =
-    route.params
+  const {
+    name,
+    serviceId,
+    activeService,
+    isActive,
+    isActiveSubscription,
+    startDate,
+  } = route.params
   const navigation = useNavigation()
   const [userId, setUserId] = useState("")
   const [serviceIsActive, setServiceIsActive] = useState("")
@@ -23,6 +30,7 @@ const ProductViewScreen = ({ route }) => {
     fetchUser()
     setServiceIsActive(isActive)
     fetchSubscriptions(activeService.id)
+    // console.log(activeService) // FIXME: Remove
   }, [userId, isActive, activeService.id])
 
   // Fetch matching Subscriptions from Supabase
@@ -36,17 +44,21 @@ const ProductViewScreen = ({ route }) => {
     }
     if (error) {
       Alert.alert(error.message)
-      console.error(error.message) // FIXME: remove
+      // console.error(error.message) // FIXME: remove
     }
   }
 
   return (
     <View>
+      <View>
+        <CustomCard imgSource={activeService.id - 1} />
+      </View>
       <Text>
         {isActive
           ? `${activeService.name}: ${isActiveSubscription.name}`
           : `${activeService.name}`}
       </Text>
+      <Text>{isActive ? `Start date: ${startDate}` : ""}</Text>
       <Text>{isActive ? `${isActiveSubscription.price} kr / mån` : ""}</Text>
       <Text>Prenumenation: {serviceIsActive ? "Aktiv" : "Ej ansluten"}</Text>
 
