@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { Image, View, Pressable, Text, Alert } from "react-native"
+import { REACT_NATIVE_SUPABASE_URL } from "@env"
 
 import * as ImagePicker from "expo-image-picker"
-import * as FileSystem from "expo-file-system"
+
+import { FileObject } from "@supabase/storage-js"
 
 import supabase from "../../lib/initSupabase"
 import { decode, encode } from "base64-arraybuffer"
@@ -11,6 +13,7 @@ const ProfileImageHandler = () => {
   const [userId, setUserId] = useState(null)
   const [profileImage, setProfileImage] = useState(null)
   const imageSize = 150
+  const bucketUrl = `${REACT_NATIVE_SUPABASE_URL}/storage/v1/object/public/avatars/`
 
   // Checks for the authenticated user - MV
   const fetchUser = async () => {
@@ -27,22 +30,55 @@ const ProfileImageHandler = () => {
   }
 
   // Function for fetching the profile image - MV
-  const fetchProfileImage = async () => {
+  const fetchLatestUploadedImageName = async () => {
+    // Fetches a list object showing all images in the bucket - MV
     const { data, error } = await supabase.storage
       .from("avatars")
       .list(`${userId}/`)
 
     if (error) {
-      Alert.alert("Något gick fel vid bildhämtning", error.message)
+      Alert.alert("Något gick fel vid inläsning av lista", error.message)
     } else if (data.length > 0) {
-      // Sorts out / defines the newest upload in the database
+      // Sorts out / defines the newest upload in the database - MV
       const newestImage = data.reduce((prev, current) => {
         return new Date(prev.updated_at) > new Date(current.updated_at)
           ? prev
           : current
       })
 
-      setProfileImage(newestImage)
+      // Collects the name of the newest inage - MV
+      const newestImageName = newestImage?.name
+
+      return newestImageName
+    }
+  }
+
+  // Downloads the image itself - MV
+  const downloadImage = async (imageName) => {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .download(`${userId}/${imageName}`)
+
+    if (error) {
+      Alert.alert("Något gick fel vid bildhämtning", error.message)
+    } else if (data.size > 0) {
+      // This file reader understands the "Blob" format - MV
+
+      const fr = new FileReader()
+      fr.readAsDataURL(data)
+
+      // The file reader uses an event listener to trigger - MV
+      fr.onload = () => {
+        const imageUrl = fr.result // This will contain the data URL - MV
+        console.log(`Data URL: ${imageUrl}`)
+
+        const regex = /data:.*?;base64,/g
+        const imageUrlBase64 = imageUrl.replace(regex, "")
+
+        console.log(`base64 URL: ${imageUrlBase64}`)
+
+        setProfileImage(imageUrlBase64)
+      }
     }
   }
 
@@ -57,6 +93,11 @@ const ProfileImageHandler = () => {
 
     if (!imageResult.canceled) {
       const imageFile = imageResult.assets[0].uri
+      console.log(imageFile)
+      // Get the MIME Type: --MV
+      const mimeType = imageFile.split(";")[0].split(":")[1]
+      // Get the File extension: --MV
+      const fileExtension = mimeType.split("/")[1]
       // setProfileImage(
       //   imageFile,
       // ) /* This format works to display Base64 images */
@@ -67,53 +108,38 @@ const ProfileImageHandler = () => {
       const { data, error } = await supabase.storage
         .from("avatars")
         .upload(`${userId}/${imageFile.split("/").pop()}`, decodedImageFile, {
-          contentType: ["image/png", "image/jpeg"],
+          contentType: `${mimeType}`,
           upsert: true,
         })
       if (data) {
-        fetchProfileImage()
+        const name = await fetchLatestUploadedImageName()
+        downloadImage(name)
       } else if (error) {
         Alert.alert(error.message)
       }
     }
   }
 
-  // Function to set the data URI based on image type
-  const getImageUri = (imageType, imageBase64) => {
-    // console.log("Image Type:", imageType) // Log imageType
-    // console.log("Image Base64:", imageBase64) // Log imageBase64
-
-    if (imageType && imageType.startsWith("image/")) {
-      return `data:${imageType};base64,${imageBase64}`
-    }
-    // Handle other image types as needed
-    return null // Default fallback
-  }
-
   useEffect(() => {
     fetchUser()
   }, [])
-
-  console.log("Profile Image:", profileImage)
-  console.log(
-    "Image URL:",
-    getImageUri(profileImage?.metadata?.mimetype, profileImage?.name),
-  )
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {
         <Pressable onPress={pickProfileImage}>
+          {console.log(`image URL: ${profileImage}`)}
           {profileImage && (
             <Image
-              source={{
-                // uri: getImageUri(
-                //   profileImage.metadata.mimetype,
-                //   profileImage.name,
-                // ),
-                uri: "https://hsspcjlmxksnfzlifbml.supabase.co/storage/v1/object/public/avatars/bb4e13c0-569f-4dd3-924d-0e6bea237837/9k=",
+              style={{
+                width: imageSize,
+                height: imageSize,
+                backgroundColor: "white",
+                resizeMode: "contain",
               }}
-              style={{ width: imageSize, height: imageSize }}
+              source={{
+                uri: `${profileImage}`,
+              }}
             />
           )}
           {!profileImage && (
