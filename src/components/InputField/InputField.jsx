@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import React from "react"
+import { View, Text, TextInput, StyleSheet } from "react-native"
 
 const InputField = (props) => {
-  const { value, setValue, placeholder, isPassword } = props;
+  const { value, setValue, placeholder, isPassword } = props
   return (
     <View style={styles.container}>
       <TextInput
@@ -13,31 +13,25 @@ const InputField = (props) => {
         secureTextEntry={isPassword}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 10,
+    height: 48,
+    paddingHorizontal: 20,
     paddingVertical: 10,
-    marginVertical: 5,
 
-    borderColor: "beige",
-    borderWidth: 1,
-    backgroundColor: "beige",
-    borderRadius: 5,
-
-    boxShadowRadius: 5,
-    boxShadowOffset: {
-      width: 2,
-      height: 4,
-    },
-    boxShadowColor: "#0000001b",
+    borderColor: "#3693cf",
+    borderWidth: 2,
+    backgroundColor: "white",
+    borderRadius: 15,
   },
   input: {
-    color: "#bdbdaa",
+    color: "#6C6C6C",
+    fontSize: 20,
   },
-});
+})
 
-export default InputField;
+export default InputField

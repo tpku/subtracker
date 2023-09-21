@@ -23,7 +23,7 @@ const DashboardScreen = ({ session }) => {
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
   const [services, setServices] = useState(false)
-  const [loggedInUser, setLoggedInUser] = useState("")
+  //   const [loggedInUser, setLoggedInUser] = useState("")
   const [connectedServices, setConnectedServices] = useState([])
   const [toggleTotal, setToggleTotal] = useState(true)
   const [searchKey, setSearchKey] = useState("")
@@ -40,12 +40,16 @@ const DashboardScreen = ({ session }) => {
         data: { user },
       } = await supabase.auth.getUser()
       setAuthUser(user.id)
-      getUser()
+      //   getUser()
       if (authUser) fetchServices()
       fetchUserSubscriptions(user.id)
     }
     fetchUser()
   }, [])
+
+  useEffect(() => {
+    // fetchUserSubscriptions(user.id)
+  })
 
   useEffect(() => {
     const searchResult = []
@@ -62,15 +66,15 @@ const DashboardScreen = ({ session }) => {
     }
   }, [searchKey])
 
-  const getUser = async () => {
-    setLoading(true)
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("first_name")
-    if (user) setLoggedInUser(user[0].first_name)
-    if (error) Alert.alert(error.message)
-    setLoading(false)
-  }
+  //   const getUser = async () => {
+  //     setLoading(true)
+  //     const { data: user, error } = await supabase
+  //       .from("users")
+  //       .select("first_name")
+  //     if (user) setLoggedInUser(user[0].first_name)
+  //     if (error) Alert.alert(error.message)
+  //     setLoading(false)
+  //   }
 
   // TODO: Test make fetchServices return available subscriptions
   const fetchServices = async () => {
@@ -205,17 +209,22 @@ const DashboardScreen = ({ session }) => {
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <Text style={styles.heading}>Welcome user: {loggedInUser}</Text>
-        {/* <CustomButton text="Test Button" onPress={() => testSubs()} /> */}
+        {/* FIXME: Remove */}
+        {/* <Text style={styles.heading}>Welcome user: {loggedInUser}</Text> */}
+        {/* <CustomButton text="Clear table" onPress={() => deleteAllRows()} /> */}
 
-        <Text>Lägg till tjänst</Text>
+        {/* FIXME: Automated search don't work on mobile, automatically updating the services field */}
+        <Text style={styles.heading}>Lägg till tjänst</Text>
         <InputField
-          placeholder="Search"
+          placeholder="Sök:"
           value={searchKey}
           setValue={setSearchKey}
         />
       </View>
-      <ScrollView style={styles.serviceScroll} horizontal>
+      <ScrollView
+        style={styles.serviceScroll}
+        horizontal
+        showsHorizontalScrollIndicator={false}>
         {services &&
           services.map((service, index) => (
             <CustomCard
@@ -241,18 +250,27 @@ const DashboardScreen = ({ session }) => {
           ))}
       </ScrollView>
       <View style={styles.container}>
-        <Pressable onPress={() => setToggleTotal(!toggleTotal)}>
-          <Text>{toggleTotal ? "Månad" : "År"}</Text>
+        <Pressable
+          style={styles.centerContainer}
+          onPress={() => setToggleTotal(!toggleTotal)}>
+          <Text>{toggleTotal ? "< Månad >" : "< År >"}</Text>
+          {toggleTotal ? (
+            <Text style={styles.headingBig}>
+              Totalt: {calculateTotalPrice(connectedServices)} kr
+            </Text>
+          ) : (
+            <Text style={styles.headingBig}>
+              Totalt: {calculateTotalPrice(connectedServices) * 12} kr
+            </Text>
+          )}
         </Pressable>
-        {toggleTotal ? (
-          <Text>Totalt: {calculateTotalPrice(connectedServices)} kr</Text>
-        ) : (
-          <Text>Totalt: {calculateTotalPrice(connectedServices) * 12} kr</Text>
-        )}
-        <Text>Dina tjänster</Text>
+        <Text style={styles.heading}>Dina tjänster</Text>
       </View>
 
-      <ScrollView style={styles.serviceScroll} horizontal>
+      <ScrollView
+        style={styles.serviceScroll}
+        horizontal
+        showsHorizontalScrollIndicator={false}>
         {connectedServices &&
           connectedServices.map((service, index) => (
             <CustomCard
@@ -287,12 +305,24 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     rowGap: 8,
     flex: 1,
-    backgroundColor: "#3693CF",
+    backgroundColor: "white",
+    paddingTop: 16,
   },
   heading: {
-    fontSize: 10,
+    fontSize: 22,
+  },
+  headingBig: {
+    fontSize: 36,
+  },
+  centerContainer: {
+    paddingTop: 56,
+    paddingBottom: 36,
+    alignItems: "center",
   },
   container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
     paddingLeft: 16,
     paddingRight: 16,
   },

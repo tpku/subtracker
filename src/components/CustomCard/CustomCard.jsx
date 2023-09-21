@@ -50,11 +50,9 @@ const CustomCard = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 93,
-    height: 93,
-    marginVertical: 5,
+    marginVertical: 8,
 
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -62,10 +60,14 @@ const styles = StyleSheet.create({
 
   container_PRIMARY: {
     backgroundColor: "#000000",
+    width: 93,
+    height: 93,
   },
 
   container_SECONDARY: {
-    backgroundColor: "#2e2e2e88",
+    backgroundColor: "#000000",
+    width: 120,
+    height: 120,
   },
 
   text: {
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     color: "#f5f5dc",
   },
   logo: {
-    width: "80%",
+    width: "100%",
     maxWidth: 63,
     maxHeight: 63,
   },
