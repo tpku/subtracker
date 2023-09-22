@@ -5,6 +5,7 @@ import supabase from "../../lib/initSupabase"
 import CustomCard from "../../components/CustomCard"
 import CustomButton from "../../components/CustomButton/CustomButton"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
+import DropDownPicker from "react-native-dropdown-picker"
 
 // TODO: Add calendar to Subscription and Discount
 // TODO: Add function to overwrite origin Subscription with Discount price
@@ -45,15 +46,29 @@ const ProductAddScreen = ({ route }) => {
     users_id: "",
   }
   const [newDiscount, setNewDiscount] = useState(initialDiscount)
+  // Dropdown states
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState(null)
+  const [dropdownList, setDropdownList] = useState([])
+  const convertToDropdown = (list) => {
+    const updatedList = list.map((listItem) => {
+      return {
+        label: `${listItem.name} ${listItem.price} kr`,
+        value: listItem.id,
+      }
+    })
+    setDropdownList(updatedList)
+  }
 
   // ----- FIXME: Remove -----
   //   console.log({ serviceName })
   //   console.log({ serviceId })
   //   console.log({ serviceActive })
-  //   console.log({ serviceSubscriptions })
+  // console.log({ serviceSubscriptions })
   //   console.log({ serviceImgSource })
   //   console.log({ serviceDiscount })
   //   console.log({ resetCheckBox })
+
   useEffect(() => {
     const fetchUser = async () => {
       const {
@@ -68,7 +83,9 @@ const ProductAddScreen = ({ route }) => {
     if (userId) checkActiveServices(userId, serviceId)
     setCheckboxState(false) // Reset variable on service change
     setSelectedSubscription("") // Reset variable on service change
+    // setValue("") // Reset variable on service change (Dropdown)
     setNewSubscription(initialSubscription) // Reset variable on service change
+    convertToDropdown(serviceSubscriptions) // Covert subscriptions to dropdown object
   }, [serviceId, userId])
 
   useEffect(() => {
@@ -83,6 +100,14 @@ const ProductAddScreen = ({ route }) => {
     // if (newDiscount) console.log(newDiscount) // FIXME: Delete
     if (newDiscount) addUserDiscount(checkboxState, newDiscount)
   }, [newDiscount])
+
+  useEffect(() => {
+    if (selectedSubscription !== null) {
+      updateSubscription(userId, selectedSubscription, serviceId, checkboxState)
+      // console.log(checkboxState) // FIXME: Delete
+      // console.log(selectedSubscription) // FIXME: Delete
+    }
+  }, [checkboxState, selectedSubscription])
 
   // Check if subscription exists on user and service
   const checkActiveServices = async (user_id, selected_id) => {
@@ -120,14 +145,15 @@ const ProductAddScreen = ({ route }) => {
       services_id: service_id,
       discount_active: discount_active,
     }
-    const isEmptyOrNull = Object.values(updatedSubscription).some(
-      (value) => value === "" || value === null,
-    )
-    if (isEmptyOrNull) {
-      const error = "Error: Updated subscription keys cannot be empty or null."
-      Alert.alert(error)
-      return
-    }
+    // FIXME: Delete or Find alternate solution
+    // const isEmptyOrNull = Object.values(updatedSubscription).some(
+    //   (value) => value === "" || value === null,
+    // )
+    // if (isEmptyOrNull) {
+    //   const error = "Error: Updated subscription keys cannot be empty or null."
+    //   Alert.alert(error)
+    //   return
+    // }
     setNewSubscription(updatedSubscription)
   }
 
@@ -171,13 +197,12 @@ const ProductAddScreen = ({ route }) => {
       .insert([subscription])
       .select()
     if (data) {
-      console.log(data[0].id) // FIXME: Remove
-      // setLatestSubscriptionId(data[0].id)
+      // console.log(data[0].id) // FIXME: Delete
       if (discount_active) {
-        updateDiscount(data[0].id, discount_id, start_date, user_id)
+        updateDiscount(data[0]?.id, discount_id, start_date, user_id)
       }
     }
-    if (data && !error) console.log("Successfully updated!")
+    if (data && !error) console.log("Subscription successfully added!")
     // if (!error) // FIXME: Uncomment
     //   setTimeout(() => {
     //     navigation.navigate("ProductScreen")
@@ -192,36 +217,38 @@ const ProductAddScreen = ({ route }) => {
         .from("user_subscription_discount")
         .insert([new_discount])
         .select()
+
+      if (data && !error) console.log("Discount successfully added!")
       if (!error && data) console.log({ data })
       if (error) console.error(error.message)
       if (error) Alert.alert(error.message)
     }
   }
 
-  // TODO: Remake the render as an dropdown select
-  // Render service subscriptions
-  const renderSubscriptions = (service_subscriptions) => {
-    return service_subscriptions
-      ? service_subscriptions.map((subscription, index) => (
-          <Pressable
-            style={styles.testButton}
-            key={index}
-            onPress={async () => {
-              setSelectedSubscription(subscription.id)
-              await updateSubscription(
-                userId,
-                subscription.id,
-                serviceId,
-                checkboxState,
-              )
-            }}>
-            <Text>
-              {subscription.name} {subscription.price} kr
-            </Text>
-          </Pressable>
-        ))
-      : null
-  }
+  // // TODO: Remake the render as an dropdown select
+  // // Render service subscriptions
+  // const renderSubscriptions = (service_subscriptions) => {
+  //   return service_subscriptions
+  //     ? service_subscriptions.map((subscription, index) => (
+  //         <Pressable
+  //           style={styles.testButton}
+  //           key={index}
+  //           onPress={async () => {
+  //             setSelectedSubscription(subscription.id)
+  //             await updateSubscription(
+  //               userId,
+  //               subscription.id,
+  //               serviceId,
+  //               checkboxState,
+  //             )
+  //           }}>
+  //           <Text>
+  //             {subscription.name} {subscription.price} kr
+  //           </Text>
+  //         </Pressable>
+  //       ))
+  //     : null
+  // }
 
   // TODO: Remake the render as an dropdown select
   // Render discount subscriptions
@@ -244,8 +271,23 @@ const ProductAddScreen = ({ route }) => {
       <View>
         <Text>Status: ej ansluten</Text>
         <Text></Text>
-        <View>{renderSubscriptions(serviceSubscriptions)}</View>
-        {selectedSubscription &&
+        {/* <View>{renderSubscriptions(serviceSubscriptions)}</View> */}
+        {/* TODO: Replace above subscriptions with dropdown below*/}
+        <DropDownPicker
+          open={open}
+          value={value}
+          items={dropdownList}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setDropdownList}
+          placeholder={"Välj en tjänst."}
+          onChangeValue={async () => (
+            setSelectedSubscription(value),
+            await updateSubscription(userId, value, serviceId, checkboxState)
+          )}
+        />
+        {value &&
+        selectedSubscription &&
         selectedSubscription !== "" &&
         serviceDiscount ? (
           <View style={styles.width}>
@@ -253,19 +295,12 @@ const ProductAddScreen = ({ route }) => {
             <BouncyCheckbox
               fillColor="#3693CF"
               size={40}
+              iconStyle={{ borderColor: "#3693CF" }}
+              innerIconStyle={{ borderWidth: 2, borderRadius: 15 }}
               isChecked={checkboxState}
               disableBuiltInState
               useNativeDriver={false}
-              onPress={async () => (
-                setCheckboxState(!checkboxState),
-                await updateSubscription(
-                  // FIXME: New. Update Sub in both checkbox and sub click. Maybe delete?
-                  userId,
-                  selectedSubscription,
-                  serviceId,
-                  checkboxState,
-                )
-              )}
+              onPress={async () => setCheckboxState(!checkboxState)}
             />
           </View>
         ) : null}
