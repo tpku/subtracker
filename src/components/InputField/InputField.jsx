@@ -1,16 +1,20 @@
-import React from "react"
+import React, { useState } from "react"
 import { View, Text, TextInput, StyleSheet } from "react-native"
 
 const InputField = (props) => {
   const { value, setValue, placeholder, isPassword } = props
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        value={value}
-        onChangeText={setValue}
+        defaultValue={value} // FIXME: For dashboard search
+        onChangeText={(text) => setValue(text)} // FIXME: For dashboard search
         secureTextEntry={isPassword}
+        inputMode="text"
+        onSubmitEditing={setValue} // FIXME: For dashboard search
+        autoCapitalize="none" // FIXME: For dashboard search
       />
     </View>
   )

@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   useWindowDimensions,
+  Keyboard,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { FlatList } from "react-native"
@@ -48,23 +49,32 @@ const DashboardScreen = ({ session }) => {
   }, [])
 
   useEffect(() => {
-    // fetchUserSubscriptions(user.id)
+    // fetchUserSubscriptions(user.id) // FIXME: Delete
   })
 
   useEffect(() => {
-    const searchResult = []
+    searchServices()
+  }, [searchKey])
+
+  const searchServices = () => {
+    let searchResult = []
     if (services && searchKey !== "") {
-      for (let i = 0; i < services.length; i++) {
-        const result = services[i]
+      const updatedServices = [...services]
+      for (let i = 0; i < updatedServices.length; i++) {
+        const result = updatedServices[i]
         if (result.name.includes(searchKey)) {
           searchResult.push(result)
-          services.splice(i, 1)
+          updatedServices.splice(i, 1)
           i--
         }
       }
-      services.unshift(...searchResult)
+      updatedServices.unshift(...searchResult)
+      setServices(updatedServices)
+    } else {
+      // FIXME: Remove to keep search result else reset on clear input
+      setServices(resetServices)
     }
-  }, [searchKey])
+  }
 
   //   const getUser = async () => {
   //     setLoading(true)
@@ -217,8 +227,9 @@ const DashboardScreen = ({ session }) => {
         <Text style={styles.heading}>Lägg till tjänst</Text>
         <InputField
           placeholder="Sök:"
-          value={searchKey}
+          defaultValue={searchKey}
           setValue={setSearchKey}
+          onSubmitEditing={searchServices}
         />
       </View>
       <ScrollView
