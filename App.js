@@ -7,11 +7,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import supabase from "./src/lib/initSupabase"
 import LoginScreen from "./src/screens/LoginScreen"
 import DashboardScreen from "./src/screens/DashboardScreen"
-import ProductScreen from "./src/screens/ProductScreen"
+// import ProductScreen from "./src/screens/ProductScreen"
 import StartScreen from "./src/screens/StartScreen"
 import SignupScreen from "./src/screens/SignupScreen"
 import UserAccountScreen from "./src/screens/UserAccountScreen"
 import UserSettingsScreen from "./src/screens/UserSettingsScreen"
+import ProductViewScreen from "./src/screens/ProductViewScreen"
+import ProductEditScreen from "./src/screens/ProductEditScreen"
+import ProductAddScreen from "./src/screens/ProductAddScreen"
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -49,8 +52,26 @@ export default function App() {
                       tabBarLabelStyle: { display: "none" },
                       tabBarButton: () => null,
                     }}
-                    name="ProductScreen"
-                    component={ProductScreen}
+                    name="ProductEditScreen"
+                    component={ProductEditScreen}
+                  />
+                  <Tab.Screen
+                    options={{
+                      tabBarIconStyle: { display: "none" },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarButton: () => null,
+                    }}
+                    name="ProductViewScreen"
+                    component={ProductViewScreen}
+                  />
+                  <Tab.Screen
+                    options={{
+                      tabBarIconStyle: { display: "none" },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarButton: () => null,
+                    }}
+                    name="ProductAddScreen"
+                    component={ProductAddScreen}
                   />
                 </Tab.Navigator>
               )}
