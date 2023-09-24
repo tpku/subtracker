@@ -16,6 +16,19 @@ import ProductViewScreen from "./src/screens/ProductViewScreen"
 import ProductEditScreen from "./src/screens/ProductEditScreen"
 import ProductAddScreen from "./src/screens/ProductAddScreen"
 
+// This part is for initiating OneSign notification functions - MV --- --->
+
+import { LogLevel, OneSignal } from "react-native-onesignal"
+import Constants from "expo-constants"
+
+OneSignal.Debug.setLogLevel(LogLevel.Verbose)
+OneSignal.initialize(Constants.expoConfig.extra.oneSignalAppId)
+
+// Also need enable notifications to complete OneSignal setup
+OneSignal.Notifications.requestPermission(true)
+
+// <--- --- ---|
+
 export default function App() {
   const [session, setSession] = useState(null)
   const Stack = createNativeStackNavigator()
