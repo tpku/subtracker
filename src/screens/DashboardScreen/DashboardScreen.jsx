@@ -8,7 +8,6 @@ import {
   Pressable,
   Image,
   useWindowDimensions,
-  Keyboard,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { FlatList } from "react-native"
@@ -221,17 +220,17 @@ const DashboardScreen = ({ session }) => {
       <View style={styles.container}>
         {/* FIXME: Remove */}
         {/* <Text style={styles.heading}>Welcome user: {loggedInUser}</Text> */}
-        {/* <CustomButton text="Clear table" onPress={() => deleteAllRows()} /> */}
 
         {/* FIXME: Automated search don't work on mobile, automatically updating the services field */}
         <Text style={styles.heading}>Lägg till tjänst</Text>
         <InputField
           placeholder="Sök:"
           defaultValue={searchKey}
-          setValue={setSearchKey}
-          onSubmitEditing={searchServices}
+          setValue={setSearchKey} // Replace
+          onSubmitEditing={searchServices} // Replace
         />
       </View>
+
       <ScrollView
         style={styles.serviceScroll}
         horizontal
