@@ -5,7 +5,7 @@ import supabase from "../../lib/initSupabase"
 import CustomCard from "../../components/CustomCard"
 import CustomButton from "../../components/CustomButton/CustomButton"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import DropDownPicker from "react-native-dropdown-picker"
+import CustomDropdown from "../../components/CustomDropdown"
 
 // TODO: Add calendar to Subscription and Discount
 // TODO: Add function to overwrite origin Subscription with Discount price
@@ -47,7 +47,7 @@ const ProductAddScreen = ({ route }) => {
   }
   const [newDiscount, setNewDiscount] = useState(initialDiscount)
   // Dropdown states
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false) // FIXME: Delete. "DropDownPicker"
   const [value, setValue] = useState(null)
   const [dropdownList, setDropdownList] = useState([])
   const convertToDropdown = (list) => {
@@ -104,10 +104,13 @@ const ProductAddScreen = ({ route }) => {
   useEffect(() => {
     if (selectedSubscription !== null) {
       updateSubscription(userId, selectedSubscription, serviceId, checkboxState)
-      // console.log(checkboxState) // FIXME: Delete
-      // console.log(selectedSubscription) // FIXME: Delete
     }
   }, [checkboxState, selectedSubscription])
+
+  const handleDropdownSelect = (item) => {
+    setValue(item)
+    setSelectedSubscription(item.value)
+  }
 
   // Check if subscription exists on user and service
   const checkActiveServices = async (user_id, selected_id) => {
@@ -273,7 +276,7 @@ const ProductAddScreen = ({ route }) => {
         <Text></Text>
         {/* <View>{renderSubscriptions(serviceSubscriptions)}</View> */}
         {/* TODO: Replace above subscriptions with dropdown below*/}
-        <DropDownPicker
+        {/* <DropDownPicker
           open={open}
           value={value}
           items={dropdownList}
@@ -285,6 +288,12 @@ const ProductAddScreen = ({ route }) => {
             setSelectedSubscription(value),
             await updateSubscription(userId, value, serviceId, checkboxState)
           )}
+        /> */}
+        <CustomDropdown
+          label="Välj en tjänst"
+          data={dropdownList}
+          onSelect={handleDropdownSelect}
+          // onSelect={setValue}
         />
         {value &&
         selectedSubscription &&

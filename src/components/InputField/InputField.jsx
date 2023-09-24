@@ -10,10 +10,10 @@ const InputField = (props) => {
         style={styles.input}
         placeholder={placeholder}
         defaultValue={value} // FIXME: For dashboard search
-        onChangeText={(text) => setValue(text)} // FIXME: For dashboard search
+        onChangeText={(text) => setValue(text)} // FIXME: For dashboard search // Replace
         secureTextEntry={isPassword}
         inputMode="text"
-        onSubmitEditing={setValue} // FIXME: For dashboard search
+        onSubmitEditing={setValue} // FIXME: For dashboard search // Replace
         autoCapitalize="none" // FIXME: For dashboard search
       />
     </View>
