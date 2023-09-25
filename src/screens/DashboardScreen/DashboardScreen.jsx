@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { forwardRef, useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -30,9 +30,10 @@ const DashboardScreen = ({ session }) => {
   const [resetServices, setResetServices] = useState("")
 
   const currentDate = new Date()
-  const formattedDate = `${currentDate.getFullYear()}/${
-    currentDate.getMonth() + 1
-  }/${currentDate.getDate()}`
+  const formattedDate = `${currentDate.getFullYear()}/${(
+    "0" +
+    (currentDate.getMonth() + 1)
+  ).slice(-2)}/${currentDate.getDate()}`
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -216,96 +217,99 @@ const DashboardScreen = ({ session }) => {
   }
 
   return (
-    <View style={styles.root}>
-      <View style={styles.container}>
-        {/* FIXME: Remove */}
-        {/* <Text style={styles.heading}>Welcome user: {loggedInUser}</Text> */}
+    <ScrollView>
+      <View style={styles.root}>
+        <View style={styles.container}>
+          {/* FIXME: Remove */}
+          {/* <Text style={styles.heading}>Welcome user: {loggedInUser}</Text> */}
 
-        {/* FIXME: Automated search don't work on mobile, automatically updating the services field */}
-        <Text style={styles.heading}>Lägg till tjänst</Text>
-        <InputField
-          placeholder="Sök:"
-          defaultValue={searchKey}
-          setValue={setSearchKey} // Replace
-          onSubmitEditing={searchServices} // Replace
-        />
-      </View>
+          {/* FIXME: Automated search don't work on mobile, automatically updating the services field */}
+          <Text style={styles.heading}>Lägg till tjänst</Text>
+          <InputField
+            placeholder="Sök:"
+            defaultValue={searchKey}
+            setValue={setSearchKey} // Replace
+            onSubmitEditing={searchServices} // Replace
+          />
+        </View>
 
-      <ScrollView
-        style={styles.serviceScroll}
-        horizontal
-        showsHorizontalScrollIndicator={false}>
-        {services &&
-          services.map((service, index) => (
-            <CustomCard
-              text={service.name}
-              key={index}
-              imgSource={service.id - 1}
-              btnType="SECONDARY"
-              onPress={async () => {
-                const isActive = await checkUserService(authUser, service.id)
-                const activeSub = await getActiveSub(authUser, service.id)
-                navigation.navigate("ProductViewScreen", {
-                  name: service.name,
-                  serviceId: service.id,
-                  activeService: service,
-                  isActive: isActive,
-                  isActiveSubscription: activeSub,
-                  startDate: service.users_subscriptions[0]
-                    ? service.users_subscriptions[0].start_date
-                    : "",
-                })
-              }}
-            />
-          ))}
-      </ScrollView>
-      <View style={styles.container}>
-        <Pressable
-          style={styles.centerContainer}
-          onPress={() => setToggleTotal(!toggleTotal)}>
-          <Text>{toggleTotal ? "< Månad >" : "< År >"}</Text>
-          {toggleTotal ? (
-            <Text style={styles.headingBig}>
-              Totalt: {calculateTotalPrice(connectedServices)} kr
-            </Text>
-          ) : (
-            <Text style={styles.headingBig}>
-              Totalt: {calculateTotalPrice(connectedServices) * 12} kr
-            </Text>
-          )}
-        </Pressable>
-        <Text style={styles.heading}>Dina tjänster</Text>
-      </View>
+        <ScrollView
+          style={styles.serviceScroll}
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {services &&
+            services.map((service, index) => (
+              <CustomCard
+                text={service.name}
+                key={index}
+                imgSource={service.id - 1}
+                btnType="SECONDARY"
+                onPress={async () => {
+                  const isActive = await checkUserService(authUser, service.id)
+                  const activeSub = await getActiveSub(authUser, service.id)
+                  navigation.navigate("ProductViewScreen", {
+                    name: service.name,
+                    serviceId: service.id,
+                    activeService: service,
+                    isActive: isActive,
+                    isActiveSubscription: activeSub,
+                    startDate: service.users_subscriptions[0]
+                      ? service.users_subscriptions[0].start_date
+                      : "",
+                  })
+                }}
+              />
+            ))}
+        </ScrollView>
+        <View style={styles.container}>
+          <Pressable
+            style={styles.centerContainer}
+            onPress={() => setToggleTotal(!toggleTotal)}>
+            <Text>{toggleTotal ? "< Månad >" : "< År >"}</Text>
+            {toggleTotal ? (
+              <Text style={styles.headingBig}>
+                Totalt: {calculateTotalPrice(connectedServices)} kr
+              </Text>
+            ) : (
+              <Text style={styles.headingBig}>
+                Totalt: {calculateTotalPrice(connectedServices) * 12} kr
+              </Text>
+            )}
+          </Pressable>
+          <Text style={styles.heading}>Dina tjänster</Text>
+        </View>
 
-      <ScrollView
-        style={styles.serviceScroll}
-        horizontal
-        showsHorizontalScrollIndicator={false}>
-        {connectedServices &&
-          connectedServices.map((service, index) => (
-            <CustomCard
-              text={service.name}
-              key={index}
-              imgSource={service.id - 1}
-              btnType="SECONDARY"
-              onPress={async () => {
-                const isActive = await checkUserService(authUser, service.id)
-                navigation.navigate("ProductViewScreen", {
-                  name: service.name,
-                  serviceId: service.id,
-                  activeService: service,
-                  isActive: isActive,
-                  isActiveSubscription: service.subscriptions[0],
-                  startDate: service.start_date,
-                })
-              }}
-            />
-          ))}
-      </ScrollView>
-      <View>
-        <Spinner visible={loading} />
+        <ScrollView
+          style={styles.serviceScroll}
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {connectedServices &&
+            connectedServices.map((service, index) => (
+              <CustomCard
+                text={service.name}
+                key={index}
+                imgSource={service.id - 1}
+                btnType="SECONDARY"
+                onPress={async () => {
+                  const isActive = await checkUserService(authUser, service.id)
+                  navigation.navigate("ProductViewScreen", {
+                    name: service.name,
+                    serviceId: service.id,
+                    activeService: service,
+                    isActive: isActive,
+                    isActiveSubscription: service.subscriptions[0],
+                    startDate: service.start_date,
+                  })
+                }}
+              />
+            ))}
+        </ScrollView>
+
+        <View>
+          <Spinner visible={loading} />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
