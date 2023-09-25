@@ -16,6 +16,24 @@ import ProductViewScreen from "./src/screens/ProductViewScreen"
 import ProductEditScreen from "./src/screens/ProductEditScreen"
 import ProductAddScreen from "./src/screens/ProductAddScreen"
 
+import { LogLevel, OneSignal } from "react-native-onesignal"
+import { ONE_SIGNAL_APP_ID } from "@env"
+
+// Remove this method to stop OneSignal Debugging
+OneSignal.Debug.setLogLevel(LogLevel.Verbose)
+
+// OneSignal Initialization
+OneSignal.initialize("ONESIGNAL_APP_ID")
+
+// requestPermission will show the native iOS or Android notification permission prompt.
+// We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+OneSignal.Notifications.requestPermission(true)
+
+// Method for listening for notification clicks
+OneSignal.Notifications.addEventListener("click", (event) => {
+  console.log("OneSignal: notification clicked:", event)
+})
+
 export default function App() {
   const [session, setSession] = useState(null)
   const Stack = createNativeStackNavigator()
