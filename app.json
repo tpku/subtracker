@@ -14,13 +14,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.dummybundleid" // Not a real bundleIdentifier! Needs to be replaced with a proper one, if the is to be used on Iphones as well.
+      "bundleIdentifier": "com.example.dummybundleid"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.subtracker.androidbundleid"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +34,8 @@
         }
       ]
     ],
-    "extra": { "oneSignalAppId": "e7ca8c72-7864-46f6-a796-1b0cec1975c3" }
+    "extra": {
+      "oneSignalAppId": "e7ca8c72-7864-46f6-a796-1b0cec1975c3"
+    }
   }
 }
