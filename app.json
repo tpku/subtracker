@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "extra": {
+      "oneSignalAppId": "e7ca8c72-7864-46f6-a796-1b0cec1975c3"
+    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
@@ -33,9 +36,6 @@
           "mode": "development"
         }
       ]
-    ],
-    "extra": {
-      "oneSignalAppId": "e7ca8c72-7864-46f6-a796-1b0cec1975c3"
-    }
+    ]
   }
 }
