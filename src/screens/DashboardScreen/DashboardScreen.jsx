@@ -18,10 +18,6 @@ import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
 import CustomCard from "../../components/CustomCard"
 
-// FIXME: Calendar test
-import { Calendar } from "react-native-calendars"
-import CustomCalendar from "../../components/CustomCalendar"
-
 const DashboardScreen = ({ session }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
@@ -308,30 +304,7 @@ const DashboardScreen = ({ session }) => {
               />
             ))}
         </ScrollView>
-        {/* FIXME: Calendar test */}
-        {/* <Calendar
-          style={styles.calendar}
-          onDayPress={(day) => console.log("onDayPress", day.dateString)}
-          onDayLongPress={(day) =>
-            console.log("onDayLongPress", day.dateString)
-          }
-          onMonthChange={(date) => console.log("onMonthChange", date)}
-          onPressArrowLeft={(goToPreviousMonth) => {
-            console.log("onPressArrowLeft")
-            goToPreviousMonth()
-          }}
-          onPressArrowRight={(goToNextMonth) => {
-            console.log("onPressArrowRight")
-            goToNextMonth()
-          }}
-          // showWeekNumbers={true}
-          firstDay={+1}
-        /> */}
 
-        <CustomCalendar
-          initialDate={formattedDate}
-          onDaySelect={(day) => console.log(`Date selected: ${day.dateString}`)}
-        />
         <View>
           <Spinner visible={loading} />
         </View>

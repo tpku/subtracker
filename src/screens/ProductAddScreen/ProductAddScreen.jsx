@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react"
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Alert,
-  ScrollView,
-} from "react-native"
+import { StyleSheet, View, Text, Alert, ScrollView } from "react-native"
 
 import supabase from "../../lib/initSupabase"
 import CustomCard from "../../components/CustomCard"
@@ -15,7 +8,6 @@ import BouncyCheckbox from "react-native-bouncy-checkbox"
 import CustomDropdown from "../../components/CustomDropdown"
 import CustomCalendar from "../../components/CustomCalendar"
 
-// TODO: Add calendar to Subscription and Discount
 // TODO: Add function to overwrite origin Subscription with Discount price
 // TODO: Add function to send notice for next invoice and upcoming payment
 
@@ -30,17 +22,27 @@ const ProductAddScreen = ({ route }) => {
     serviceDiscount,
     resetCheckBox, // FIXME: Delete?
   } = route.params
+
+  // ----- FIXME: Remove -----
+  //   console.log({ serviceName })
+  //   console.log({ serviceId })
+  //   console.log({ serviceActive })
+  // console.log({ serviceSubscriptions })
+  //   console.log({ serviceImgSource })
+  //   console.log({ serviceDiscount })
+  //   console.log({ resetCheckBox })
+
   const [userId, setUserId] = useState("")
   const [updateValidation, setUpdateValidation] = useState("")
   const [selectedSubscription, setSelectedSubscription] = useState("")
   const [checkboxState, setCheckboxState] = useState(false)
-  // const [toggleDiscount, setToggleDiscount] = useEffect(false)
+
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${(
     "0" +
     (currentDate.getMonth() + 1)
   ).slice(-2)}/${currentDate.getDate()}`
-  console.log(formattedDate)
+
   const initialSubscription = {
     users_id: "",
     subscriptions_id: "",
@@ -57,9 +59,11 @@ const ProductAddScreen = ({ route }) => {
   }
   const [newDiscount, setNewDiscount] = useState(initialDiscount)
   // Dropdown states
-  const [open, setOpen] = useState(false) // FIXME: Delete. "DropDownPicker"
   const [value, setValue] = useState(null)
   const [dropdownList, setDropdownList] = useState([])
+  const [startDate, setStartDate] = useState("")
+  // const [endDate, setEndDate] = useState("") // Save
+
   const convertToDropdown = (list) => {
     const updatedList = list.map((listItem) => {
       return {
@@ -70,23 +74,11 @@ const ProductAddScreen = ({ route }) => {
     setDropdownList(updatedList)
   }
 
-  const [startDate, setStartDate] = useState("")
-  // const [endDate, setEndDate] = useState("") // Save
-
   useEffect(() => {
     if (startDate !== "") {
       console.log({ startDate })
     }
   }, [startDate])
-
-  // ----- FIXME: Remove -----
-  //   console.log({ serviceName })
-  //   console.log({ serviceId })
-  //   console.log({ serviceActive })
-  // console.log({ serviceSubscriptions })
-  //   console.log({ serviceImgSource })
-  //   console.log({ serviceDiscount })
-  //   console.log({ resetCheckBox })
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -158,7 +150,6 @@ const ProductAddScreen = ({ route }) => {
     }
   }
 
-  // TODO: Date: Calendar
   // Update initial subscriptions object before adding to Supabase
   const updateSubscription = async (
     user_id,
@@ -233,7 +224,7 @@ const ProductAddScreen = ({ route }) => {
       }
     }
     if (data && !error) console.log("Subscription successfully added!")
-    // if (!error) // FIXME: Uncomment
+    // if (!error) // FIXME: Uncomment when app ready
     //   setTimeout(() => {
     //     navigation.navigate("ProductScreen")
     //   }, 2000)
@@ -254,31 +245,6 @@ const ProductAddScreen = ({ route }) => {
       if (error) Alert.alert(error.message)
     }
   }
-
-  // // TODO: Remake the render as an dropdown select
-  // // Render service subscriptions
-  // const renderSubscriptions = (service_subscriptions) => {
-  //   return service_subscriptions
-  //     ? service_subscriptions.map((subscription, index) => (
-  //         <Pressable
-  //           style={styles.testButton}
-  //           key={index}
-  //           onPress={async () => {
-  //             setSelectedSubscription(subscription.id)
-  //             await updateSubscription(
-  //               userId,
-  //               subscription.id,
-  //               serviceId,
-  //               checkboxState,
-  //             )
-  //           }}>
-  //           <Text>
-  //             {subscription.name} {subscription.price} kr
-  //           </Text>
-  //         </Pressable>
-  //       ))
-  //     : null
-  // }
 
   // TODO: Remake the render as an dropdown select
   // Render discount subscriptions
@@ -302,21 +268,6 @@ const ProductAddScreen = ({ route }) => {
         <Text>Status: ej ansluten</Text>
         <Text></Text>
         <Text>Abonnemang:</Text>
-        {/* <View>{renderSubscriptions(serviceSubscriptions)}</View> */}
-        {/* TODO: Replace above subscriptions with dropdown below*/}
-        {/* <DropDownPicker
-          open={open}
-          value={value}
-          items={dropdownList}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setDropdownList}
-          placeholder={"Välj en tjänst."}
-          onChangeValue={async () => (
-            setSelectedSubscription(value),
-            await updateSubscription(userId, value, serviceId, checkboxState)
-            )}
-          /> */}
         <CustomDropdown
           label="Välj en tjänst"
           data={dropdownList}
@@ -381,13 +332,9 @@ const styles = StyleSheet.create({
     padding: 16,
     rowGap: 8,
     flex: 1,
-    // alignItems: "start",
-    // padding: 20,
     backgroundColor: "white",
   },
   heading: {
-    // flex: 1,
-    // display: "flex",
     textAlign: "center",
     fontSize: 36,
     textTransform: "capitalize",

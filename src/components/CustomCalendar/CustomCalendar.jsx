@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState } from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { Calendar } from "react-native-calendars"
 
@@ -6,13 +6,8 @@ const CustomCalendar = (props) => {
   const { initialDate, selectStartDate, selectEndDate } = props
   const [selected, setSelected] = useState(initialDate)
   const [selected2, setSelected2] = useState(initialDate)
-  const currentDate = new Date()
-  const formattedDate = `${currentDate.getFullYear()}/${(
-    "0" +
-    (currentDate.getMonth() + 1)
-  ).slice(-2)}/${currentDate.getDate()}`
   const [selectFirstDate, setSelectFirstDate] = useState("")
-  const [selectLastDate, setSelectLastDate] = useState("")
+  const [selectLastDate, setSelectLastDate] = useState("") // FIXME: DON'T DELETE!
 
   //   FIXME: DON'T DELETE!
   //   const selectDates = (date) => {
@@ -53,46 +48,6 @@ const CustomCalendar = (props) => {
       selectStartDate(date) // Passed to parent
     }
   }
-  //   const marked = useMemo(
-  //     () => ({
-  //       [selected]: {
-  //         customStyles: {
-  //           container: {
-  //             borderRadius: 15,
-  //           },
-  //         },
-  //         selected: true,
-  //         selectedColor: "#3693CF",
-  //         selectedTextColor: "white",
-  //       },
-  //       [selected2]: {
-  //         customStyles: {
-  //           container: {
-  //             borderRadius: 15,
-  //           },
-  //         },
-  //         selected: true,
-  //         selectedColor: "#3693CF",
-  //         selectedTextColor: "white",
-  //       },
-  //     }),
-  //     [selected, selected2],
-  //   )
-
-  //   const getMarked = (first_date, last_date) => {
-  //     let marked = {}
-  //     for (let i = 1; i <= 10; i++) {
-  //       let day = i.toString().padStart(2, "0")
-  //       marked[first_date] = {
-  //         startingDay: i == 1,
-  //         endingDay: i == 10,
-  //         color: "#3693CF",
-  //         textColor: "black",
-  //         disabled: true,
-  //       }
-  //     }
-  //     return marked
-  //   }
 
   const selectedDates = {
     [selected]: {
@@ -125,8 +80,6 @@ const CustomCalendar = (props) => {
         initialDate={initialDate}
         style={style.calendar}
         onDayPress={(day) => {
-          //   console.log(day.dateString)
-          //   setSelected(day.dateString)
           selectDate(day.dateString)
           //   selectDates(day.dateString) // Save
           props.onDaySelect && props.onDaySelect(day)
