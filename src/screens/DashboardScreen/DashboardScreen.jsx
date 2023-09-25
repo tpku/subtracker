@@ -38,7 +38,6 @@ const DashboardScreen = ({ session }) => {
     "0" +
     (currentDate.getMonth() + 1)
   ).slice(-2)}/${currentDate.getDate()}`
-  console.log(formattedDate)
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -3,19 +3,56 @@ import { View, Text, StyleSheet } from "react-native"
 import { Calendar } from "react-native-calendars"
 
 const CustomCalendar = (props) => {
-  const { initialDate } = props
+  const { initialDate, selectStartDate, selectEndDate } = props
   const [selected, setSelected] = useState(initialDate)
   const [selected2, setSelected2] = useState(initialDate)
-
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${(
     "0" +
     (currentDate.getMonth() + 1)
   ).slice(-2)}/${currentDate.getDate()}`
-  console.log(initialDate)
-
   const [selectFirstDate, setSelectFirstDate] = useState("")
   const [selectLastDate, setSelectLastDate] = useState("")
+
+  //   FIXME: DON'T DELETE!
+  //   const selectDates = (date) => {
+  //     if (
+  //       selectFirstDate === "" ||
+  //       selectFirstDate === null ||
+  //       selectFirstDate === undefined
+  //     ) {
+  //       setSelectFirstDate(date)
+  //       setSelected(date)
+  //       selectStartDate(date) // Passed to parent
+  //     } else if (
+  //       (selectFirstDate !== "" && selectLastDate === "") ||
+  //       selectLastDate === null ||
+  //       selectLastDate === undefined
+  //     ) {
+  //       setSelectLastDate(date)
+  //       setSelected2(date)
+  //       selectEndDate(date) // Passed to parent
+  //     } else if (selectFirstDate && selectLastDate) {
+  //       setSelectFirstDate(date)
+  //       selectStartDate(date) // Passed to parent
+  //       setSelectLastDate("")
+  //       selectEndDate("") // Passed to parent
+
+  //       setSelected(date)
+  //       setSelected2(2)
+  //     }
+  //   }
+
+  const selectDate = (date) => {
+    if (
+      selectFirstDate === "" ||
+      selectFirstDate === null ||
+      selectFirstDate === undefined
+    ) {
+      setSelected(date) // Assign styling
+      selectStartDate(date) // Passed to parent
+    }
+  }
   //   const marked = useMemo(
   //     () => ({
   //       [selected]: {
@@ -57,47 +94,6 @@ const CustomCalendar = (props) => {
   //     return marked
   //   }
 
-  const selectDates = (date) => {
-    if (
-      selectFirstDate === "" ||
-      selectFirstDate === null ||
-      selectFirstDate === undefined
-    ) {
-      setSelectFirstDate(date)
-      setSelected(date)
-    } else if (
-      (selectFirstDate !== "" && selectLastDate === "") ||
-      selectLastDate === null ||
-      selectLastDate === undefined
-    ) {
-      setSelectLastDate(date)
-      setSelected2(date)
-    } else if (selectFirstDate && selectLastDate) {
-      setSelectFirstDate(date)
-      setSelectLastDate("")
-      setSelected(date)
-      setSelected2(2)
-    }
-  }
-
-  //   useEffect(() => {
-  //     if (selectFirstDate !== "") {
-  //       console.log(selectFirstDate)
-  //     }
-  //   })
-
-  //   useEffect(() => {
-  //     if (selectLastDate !== "") {
-  //       console.log(selectLastDate)
-  //     }
-  //   })
-
-  //   useEffect(() => {
-  //     if (selectFirstDate && selectLastDate) {
-  //       getMarked(selectFirstDate, selectLastDate)
-  //     }
-  //   }, [selectFirstDate, selectLastDate])
-
   const selectedDates = {
     [selected]: {
       customStyles: {
@@ -129,8 +125,10 @@ const CustomCalendar = (props) => {
         initialDate={initialDate}
         style={style.calendar}
         onDayPress={(day) => {
+          //   console.log(day.dateString)
           //   setSelected(day.dateString)
-          selectDates(day.dateString)
+          selectDate(day.dateString)
+          //   selectDates(day.dateString) // Save
           props.onDaySelect && props.onDaySelect(day)
         }}
         // onDayLongPress={(day) => console.log("onDayLongPress", day.dateString)}
