@@ -117,7 +117,7 @@ const ProductAddScreen = ({ route }) => {
       updateSubscription(
         userId,
         selectedSubscription,
-        startDate ? startDate : formattedDate,
+        startDate ? startDate : formattedDate, // Added to avoid error on services not offering discount
         serviceId,
         checkboxState,
       )
@@ -310,7 +310,7 @@ const ProductAddScreen = ({ route }) => {
               await addUserSubscription(
                 newSubscription,
                 checkboxState,
-                serviceDiscount !== undefined ? serviceDiscount.id : null,
+                serviceDiscount !== undefined ? serviceDiscount.id : null, // Added to avoid error on services not offering discount
                 formattedDate,
                 userId,
               )
