@@ -220,7 +220,12 @@ const ProductAddScreen = ({ route }) => {
     if (data) {
       // console.log(data[0].id) // FIXME: Delete
       if (discount_active) {
-        updateDiscount(data[0]?.id, discount_id, start_date, user_id)
+        updateDiscount(
+          data[0]?.id,
+          discount_active ? discount_id : null,
+          start_date,
+          user_id,
+        )
       }
     }
     if (data && !error) console.log("Subscription successfully added!")
@@ -305,7 +310,7 @@ const ProductAddScreen = ({ route }) => {
               await addUserSubscription(
                 newSubscription,
                 checkboxState,
-                serviceDiscount.id,
+                serviceDiscount !== undefined ? serviceDiscount.id : null,
                 formattedDate,
                 userId,
               )
