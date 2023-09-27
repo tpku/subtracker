@@ -29,7 +29,7 @@ import ProductAddScreen from "./src/screens/ProductAddScreen"
 
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
-import EXPO_PROJECT_ID from "@env"
+import { EXPO_PROJECT_ID } from "@env"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

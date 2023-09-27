@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "134277984223",
+    "project_id": "subtracker-e797a",
+    "storage_bucket": "subtracker-e797a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134277984223:android:41f33afd99cdc1823a9e6a",
+        "android_client_info": {
+          "package_name": "com.subtracker.androidbundleid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIeahgyzcZ7lM0h0AiCUIqMneBXmWUUvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
