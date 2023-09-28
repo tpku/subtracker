@@ -31,6 +31,8 @@ const DashboardScreen = ({ session }) => {
   const [searchKey, setSearchKey] = useState("")
   const [resetServices, setResetServices] = useState("")
 
+  const [discounts, setDiscounts] = useState([]) // The user's collected dates for discounts. -MV
+
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${(
     "0" +
