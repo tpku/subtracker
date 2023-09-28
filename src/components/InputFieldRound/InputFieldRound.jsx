@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import { View, Text, TextInput, StyleSheet } from "react-native"
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
-const InputField = (props) => {
-  const { value, setValue, placeholder, isPassword } = props
+const InputFieldRound = (props) => {
+  const { value, setValue, placeholder, isPassword, inputMode } = props
   let [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
   })
@@ -15,11 +15,11 @@ const InputField = (props) => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        inputMode={inputMode}
         placeholder={placeholder}
         defaultValue={value} // FIXME: For dashboard search
         onChangeText={(text) => setValue(text)} // FIXME: For dashboard search // Replace
         secureTextEntry={isPassword}
-        inputMode="text"
         onSubmitEditing={setValue} // FIXME: For dashboard search // Replace
         autoCapitalize="none" // FIXME: For dashboard search
       />
@@ -30,18 +30,21 @@ const InputField = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    borderColor: "#3693cf",
+    height: 52,
+    maxWidth: 248,
+    borderColor: "#fff",
     borderWidth: 2,
-    backgroundColor: "white",
-    borderRadius: 15,
+    backgroundColor: "#3693cf",
+    borderRadius: 30,
   },
   input: {
-    color: "#6C6C6C",
-    fontSize: 16,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    height: "100%",
+    color: "#fff",
+    fontSize: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     fontFamily: "Inter_400Regular",
   },
 })
 
-export default InputField
+export default InputFieldRound

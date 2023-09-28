@@ -8,6 +8,8 @@ import {
   Button,
   Platform,
   Linking,
+  useWindowDimensions,
+  Image,
 } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -24,6 +26,9 @@ import UserAccountScreen from "./src/screens/UserAccountScreen"
 import ProductViewScreen from "./src/screens/ProductViewScreen"
 import ProductEditScreen from "./src/screens/ProductEditScreen"
 import ProductAddScreen from "./src/screens/ProductAddScreen"
+import tabBarIconHome from "./assets/icons/home1.png"
+import tabBarIconProfile from "./assets/icons/group.png"
+import SubeeLogo from "./assets/logos/Subee_small.png"
 
 // This part concerns expo-notifications -MV --->
 
@@ -48,6 +53,7 @@ export default function App() {
   const [notification, setNotification] = useState(false)
   const notificationListener = useRef()
   const responseListener = useRef()
+  const { height, width } = useWindowDimensions()
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => setExpoPushToken(token))
@@ -136,7 +142,13 @@ export default function App() {
         },
       }} /* <--- ...BE IMPORTED AS A PROP(S) ---| */
     >
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerTitle: () =>
+            session ? (
+              <Image source={SubeeLogo} style={[{ width: 180, height: 70 }]} />
+            ) : null,
+        }}>
         {session && session.user ? (
           <>
             <Stack.Screen
@@ -144,12 +156,67 @@ export default function App() {
               options={{ headerShown: false }}
               children={() => (
                 <Tab.Navigator
-                // screenOptions={{
-                //   tabBarIconStyle: { display: "none" },
-                // }}
-                >
-                  <Tab.Screen name="Hem" component={DashboardScreen} />
-                  <Tab.Screen name="Profil" component={UserAccountScreen} />
+                  screenOptions={{
+                    tabBarStyle: {
+                      height: 85,
+                      backgroundColor: "#C0C0C0",
+                    },
+                    headerTitle: () => (
+                      <Image
+                        source={SubeeLogo}
+                        style={[{ width: 180, height: 70 }]}
+                      />
+                    ),
+                  }}>
+                  <Tab.Screen
+                    name="Hem"
+                    component={DashboardScreen}
+                    options={{
+                      headerStyle: {
+                        backgroundColor: "#3693CF",
+                        height: 85,
+                      },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarIconStyle: {
+                        left: -48,
+                      },
+                      tabBarIcon: () => {
+                        return (
+                          <Image
+                            style={{ width: 42, height: 45, padding: 5 }}
+                            source={{
+                              uri: tabBarIconHome,
+                            }}
+                          />
+                        )
+                      },
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Profil"
+                    component={UserAccountScreen}
+                    options={{
+                      headerStyle: {
+                        backgroundColor: "#3693CF",
+                        height: 85,
+                        width: width,
+                      },
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarIconStyle: {
+                        right: -48,
+                      },
+                      tabBarIcon: () => {
+                        return (
+                          <Image
+                            style={{ width: 40, height: 45 }}
+                            source={{
+                              uri: tabBarIconProfile,
+                            }}
+                          />
+                        )
+                      },
+                    }}
+                  />
                   <Tab.Screen
                     options={{
                       tabBarIconStyle: { display: "none" },
@@ -187,18 +254,25 @@ export default function App() {
               name="Startscreen"
               component={StartScreen}
               options={{
+                headerShown: false,
                 title: "Startscreen. Not signed up/logged in.",
               }}
             />
             <Stack.Screen
               name="Loginscreen"
               component={LoginScreen}
-              options={{ title: "Login screen - not final" }}
+              options={{
+                headerShown: false,
+                title: "Login screen - not final",
+              }}
             />
             <Stack.Screen
               name="Signupscreen"
               component={SignupScreen}
-              options={{ title: "Signup screen - not final" }}
+              options={{
+                headerShown: false,
+                title: "Signup screen - not final",
+              }}
             />
           </>
         )}
