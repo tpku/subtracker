@@ -8,6 +8,8 @@ import {
   Button,
   Platform,
   Linking,
+  useWindowDimensions,
+  Image,
 } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -24,6 +26,8 @@ import UserAccountScreen from "./src/screens/UserAccountScreen"
 import ProductViewScreen from "./src/screens/ProductViewScreen"
 import ProductEditScreen from "./src/screens/ProductEditScreen"
 import ProductAddScreen from "./src/screens/ProductAddScreen"
+import tabBarIconHome from "./assets/icons/home1.png"
+import tabBarIconProfile from "./assets/icons/group.png"
 
 // This part concerns expo-notifications -MV --->
 
@@ -48,6 +52,7 @@ export default function App() {
   const [notification, setNotification] = useState(false)
   const notificationListener = useRef()
   const responseListener = useRef()
+  const { height, width } = useWindowDimensions()
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => setExpoPushToken(token))
@@ -144,12 +149,53 @@ export default function App() {
               options={{ headerShown: false }}
               children={() => (
                 <Tab.Navigator
-                // screenOptions={{
-                //   tabBarIconStyle: { display: "none" },
-                // }}
-                >
-                  <Tab.Screen name="Hem" component={DashboardScreen} />
-                  <Tab.Screen name="Profil" component={UserAccountScreen} />
+                  screenOptions={{
+                    tabBarStyle: {
+                      height: 85,
+                      width: width,
+                      backgroundColor: "#C0C0C0",
+                    },
+                  }}>
+                  <Tab.Screen
+                    name="Hem"
+                    component={DashboardScreen}
+                    options={{
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarIconStyle: {
+                        left: -48,
+                      },
+                      tabBarIcon: () => {
+                        return (
+                          <Image
+                            style={{ width: 42, height: 45, padding: 5 }}
+                            source={{
+                              uri: tabBarIconHome,
+                            }}
+                          />
+                        )
+                      },
+                    }}
+                  />
+                  <Tab.Screen
+                    name="Profil"
+                    component={UserAccountScreen}
+                    options={{
+                      tabBarLabelStyle: { display: "none" },
+                      tabBarIconStyle: {
+                        right: -48,
+                      },
+                      tabBarIcon: () => {
+                        return (
+                          <Image
+                            style={{ width: 40, height: 45 }}
+                            source={{
+                              uri: tabBarIconProfile,
+                            }}
+                          />
+                        )
+                      },
+                    }}
+                  />
                   <Tab.Screen
                     options={{
                       tabBarIconStyle: { display: "none" },

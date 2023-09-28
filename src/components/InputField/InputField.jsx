@@ -1,9 +1,16 @@
 import React, { useState } from "react"
 import { View, Text, TextInput, StyleSheet } from "react-native"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
 const InputField = (props) => {
   const { value, setValue, placeholder, isPassword } = props
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
 
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
   return (
     <View style={styles.container}>
       <TextInput
@@ -33,6 +40,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 6,
     paddingHorizontal: 12,
+    fontFamily: "Inter_400Regular",
   },
 })
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 import {
   View,
   Text,
@@ -14,7 +15,6 @@ import supabase from "../../lib/initSupabase"
 import CustomButton from "../../components/CustomButton/CustomButton"
 import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
-
 import portrait from "../../../assets/cp.jpeg"
 
 const UserAccountScreen = ({ session }) => {
@@ -32,9 +32,11 @@ const UserAccountScreen = ({ session }) => {
   const [newAddress, setNewAddress] = useState("")
   const [newPhoneNumber, setNewPhoneNumber] = useState("")
   const { height } = useWindowDimensions()
-
   const [toggleTotal, setToggleTotal] = useState(true)
   const [connectedServices, setConnectedServices] = useState([])
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -182,6 +184,10 @@ const UserAccountScreen = ({ session }) => {
     if (error) Alert.alert(error.message)
   }
 
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
+
   return (
     <>
       <ScrollView>
@@ -325,8 +331,10 @@ const styles = StyleSheet.create({
   },
   textMedium: {
     fontSize: 22,
+    fontFamily: "Inter_400Regular",
   },
   text16: {
+    fontFamily: "Inter_400Regular",
     fontSize: 16,
   },
   textRow: {
@@ -363,6 +371,7 @@ const styles = StyleSheet.create({
   },
   headingBig: {
     fontSize: 36,
+    fontFamily: "Inter_400Regular",
   },
 })
 

@@ -1,5 +1,6 @@
 import React from "react"
 import { View, Text, Button, StyleSheet, Pressable } from "react-native"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
 const CustomButton = (props) => {
   const {
@@ -9,6 +10,14 @@ const CustomButton = (props) => {
     textType = "PRIMARY",
     isLoggedIn = "",
   } = props
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
+
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
+
   return (
     <Pressable
       style={[
@@ -55,6 +64,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     padding: 4,
+    fontFamily: "Inter_400Regular",
   },
 
   text_PRIMARY: {

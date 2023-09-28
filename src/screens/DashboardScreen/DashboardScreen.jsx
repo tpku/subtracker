@@ -24,7 +24,7 @@ const DashboardScreen = ({ session }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
   const [authUser, setAuthUser] = useState([])
-  const [services, setServices] = useState(false)
+  const [services, setServices] = useState("")
   //   const [loggedInUser, setLoggedInUser] = useState("")
   const [connectedServices, setConnectedServices] = useState([])
   const [toggleTotal, setToggleTotal] = useState(true)
