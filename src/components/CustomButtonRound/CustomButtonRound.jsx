@@ -64,12 +64,13 @@ const styles = StyleSheet.create({
 
   container_START: {
     width: "100%",
-    height: 44,
     maxWidth: 248,
     borderColor: "#fff",
     borderWidth: 2,
     backgroundColor: "#3693cf",
     borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   text: {

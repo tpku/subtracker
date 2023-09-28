@@ -30,7 +30,7 @@ const InputFieldRound = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 44,
+    height: 52,
     maxWidth: 248,
     borderColor: "#fff",
     borderWidth: 2,
@@ -40,10 +40,9 @@ const styles = StyleSheet.create({
   input: {
     height: "100%",
     color: "#fff",
-    fontSize: 16,
-    paddingVertical: 6,
+    fontSize: 20,
+    paddingVertical: 8,
     paddingHorizontal: 16,
-    fontStyle: 20,
     fontFamily: "Inter_400Regular",
   },
 })

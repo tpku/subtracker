@@ -7,11 +7,13 @@ import {
   StyleSheet,
   useWindowDimensions,
   Alert,
+  Pressable,
 } from "react-native"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
-import Logo from "../../../assets/adaptive-icon.png"
-import InputField from "../../components/InputField/InputField"
-import CustomButton from "../../components/CustomButton/CustomButton"
+import Logo from "../../../assets/logos/Subee.png"
+import InputFieldRound from "../../components/InputFieldRound"
+import CustomButton from "../../components/CustomButton/"
 import Spinner from "react-native-loading-spinner-overlay"
 
 const btn = {
@@ -20,12 +22,18 @@ const btn = {
   "3rd": "TERTIARY",
 }
 
-const SignupScreen = () => {
+const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const { height } = useWindowDimensions()
+  const { width } = useWindowDimensions()
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
 
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
   const onSignupPressed = async (email, password) => {
     setLoading(true)
     const { data, error } = await supabase.auth.signUp({
@@ -40,23 +48,53 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.root}>
-      <Image
-        source={Logo}
-        style={[styles.logo, { height: height * 0.3 }]}
-        resizeMode="contain"
-      />
-      <InputField placeholder="Email" value={email} setValue={setEmail} />
-      <InputField
-        placeholder="Password"
-        value={password}
-        setValue={setPassword}
-        isPassword
-      />
-      <CustomButton
-        text="Sign up"
-        onPress={() => onSignupPressed(email, password)}
-        btnType={btn["2nd"]}
-      />
+      <View style={styles.container}>
+        <Image
+          source={Logo}
+          style={[
+            styles.logo,
+            { width: width - 32, height: 110, marginBottom: 150 },
+          ]}
+          resizeMode="contain"
+        />
+        <View style={{ width: 248, gap: 32 }}>
+          <InputFieldRound
+            placeholder="Email"
+            value={email}
+            setValue={setEmail}
+            inputMode="email"
+          />
+          <InputFieldRound
+            placeholder="Password"
+            value={password}
+            setValue={setPassword}
+            isPassword
+          />
+        </View>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 32,
+          gap: 32,
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <CustomButton
+          text="Skapa konto"
+          onPress={() => onSignupPressed(email, password)}
+          btnType={"LOGIN"}
+        />
+        <Pressable onPress={() => navigation.navigate("Startscreen")}>
+          <Text
+            style={{
+              color: "#fff",
+              fontFamily: "Inter_400Regular",
+            }}>
+            Tillbaka till startsidan.
+          </Text>
+        </Pressable>
+      </View>
       <View>
         <Spinner visible={loading} />
       </View>
@@ -68,13 +106,13 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     alignItems: "center",
-    padding: 20,
     backgroundColor: "#3693CF",
   },
-  logo: {
-    width: "70%",
-    maxWidth: 300,
-    maxHeight: 300,
+  container: {
+    height: 380,
+    alignItems: "center",
+    marginTop: 200,
+    justifyContent: "space-between",
   },
 })
 

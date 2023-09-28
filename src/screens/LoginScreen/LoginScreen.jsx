@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   Pressable,
 } from "react-native"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
 import Logo from "../../../assets/logos/Subee.png"
 import InputFieldRound from "../../components/InputFieldRound"
@@ -26,6 +27,9 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState("loggedOut")
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
 
   const { width } = useWindowDimensions()
 
@@ -56,13 +60,19 @@ const LoginScreen = () => {
       console.log(error)
     }
   }
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
 
   return (
     <View style={styles.root}>
       <View style={styles.container}>
         <Image
           source={Logo}
-          style={[styles.logo, { width: width - 32, height: 110 }]}
+          style={[
+            styles.logo,
+            { width: width - 32, height: 110, marginBottom: 150 },
+          ]}
           resizeMode="contain"
         />
         <View style={{ width: 248, gap: 32 }}>
@@ -70,7 +80,7 @@ const LoginScreen = () => {
             placeholder="Email"
             value={email}
             setValue={setEmail}
-            inputMode="email"
+            // inputMode="email"
           />
           <InputFieldRound
             placeholder="Password"
@@ -83,7 +93,7 @@ const LoginScreen = () => {
       <View
         style={{
           position: "absolute",
-          bottom: 16,
+          bottom: 32,
           gap: 32,
           alignItems: "center",
           justifyContent: "center",
@@ -94,7 +104,13 @@ const LoginScreen = () => {
           btnType={"LOGIN"}
         />
         <Pressable onPress={() => onRetrievePasswordPress(email)}>
-          <Text>Glömt lösenord?</Text>
+          <Text
+            style={{
+              color: "#fff",
+              fontFamily: "Inter_400Regular",
+            }}>
+            Glömt lösenord?
+          </Text>
         </Pressable>
       </View>
       <View>
@@ -108,10 +124,11 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
     backgroundColor: "#3693CF",
   },
   container: {
+    marginTop: 200,
     height: 380,
     alignItems: "center",
     justifyContent: "space-between",
