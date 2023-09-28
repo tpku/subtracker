@@ -23,10 +23,6 @@ const InputField = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 48,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-
     borderColor: "#3693cf",
     borderWidth: 2,
     backgroundColor: "white",
@@ -34,7 +30,9 @@ const styles = StyleSheet.create({
   },
   input: {
     color: "#6C6C6C",
-    fontSize: 20,
+    fontSize: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
   },
 })
 

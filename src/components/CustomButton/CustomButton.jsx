@@ -25,47 +25,48 @@ const CustomButton = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginVertical: 5,
+    maxWidth: 200,
+    paddingVertical: 8,
 
     borderRadius: 15,
     alignItems: "center",
-    borderColor: "#f3f3f3",
-    borderWidth: 1,
   },
 
   container_PRIMARY: {
     backgroundColor: "#3693cf",
+    borderWidth: 0,
   },
 
   container_SECONDARY: {
-    backgroundColor: "#286d9b",
+    backgroundColor: "#3693cf",
   },
 
   container_TERTIARY: {
-    backgroundColor: "#ff44009e",
-    borderColor: "#FF69B4",
-    borderWidth: 1,
+    backgroundColor: "#fff",
+    borderColor: "white",
+    borderWidth: 2,
   },
 
   container_ERROR: {
     backgroundColor: "#999fa3",
-    borderColor: "#ff0000",
-    borderWidth: 1,
     pointerEvents: "none",
   },
 
   text: {
-    padding: 10,
-    fontWeight: "bold",
-    color: "beige",
+    fontSize: 20,
+    padding: 4,
   },
 
   text_PRIMARY: {
-    color: "#f5f5dc",
+    color: "#fff",
+  },
+
+  text_SECONDARY: {
+    color: "#fff",
   },
 
   text_TERTIARY: {
-    color: "#FF69B4",
+    color: "#3693cf",
   },
 
   text_ERROR: {
