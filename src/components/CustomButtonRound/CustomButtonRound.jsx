@@ -2,7 +2,7 @@ import React from "react"
 import { View, Text, Button, StyleSheet, Pressable } from "react-native"
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
-const CustomButton = (props) => {
+const CustomButtonRound = (props) => {
   const {
     text,
     onPress,
@@ -37,8 +37,9 @@ const styles = StyleSheet.create({
     maxWidth: 200,
     paddingVertical: 8,
 
-    borderRadius: 15,
+    borderRadius: 30,
     alignItems: "center",
+    justifyContent: "center",
   },
 
   container_PRIMARY: {
@@ -56,17 +57,19 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
 
-  container_LOGIN: {
-    width: 200,
-    backgroundColor: "#3693cf",
-    borderColor: "white",
-    borderWidth: 2,
-    // paddingVertical: 10
-  },
-
   container_ERROR: {
     backgroundColor: "#999fa3",
     pointerEvents: "none",
+  },
+
+  container_START: {
+    width: "100%",
+    height: 44,
+    maxWidth: 248,
+    borderColor: "#fff",
+    borderWidth: 2,
+    backgroundColor: "#3693cf",
+    borderRadius: 30,
   },
 
   text: {
@@ -98,4 +101,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CustomButton
+export default CustomButtonRound

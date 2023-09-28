@@ -5,13 +5,14 @@ import {
   Text,
   Image,
   StyleSheet,
-  useWindowDimensions,
   Alert,
+  useWindowDimensions,
+  Pressable,
 } from "react-native"
 
-import Logo from "../../../assets/adaptive-icon.png"
-import InputField from "../../components/InputField/InputField"
-import CustomButton from "../../components/CustomButton/CustomButton"
+import Logo from "../../../assets/logos/Subee.png"
+import InputFieldRound from "../../components/InputFieldRound"
+import CustomButton from "../../components/CustomButton"
 import Spinner from "react-native-loading-spinner-overlay"
 
 const btn = {
@@ -25,7 +26,8 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState("loggedOut")
-  const { height } = useWindowDimensions()
+
+  const { width } = useWindowDimensions()
 
   const onLoginPressed = async (email, password) => {
     setLoading(true)
@@ -46,53 +48,55 @@ const LoginScreen = () => {
     setLoading(false)
   }
 
-  const onRetrievePasswordPress = (content) => {
-    console.warn("Retrieve password pressed")
-  }
-
-  const onLogoutPressed = async () => {
-    setLoading(true)
-    const { error } = await supabase.auth.signOut()
-    // window.localStorage.clear()
-
-    setIsLoggedIn("loggedOut")
-    console.warn("Logout pressed")
-    if (error) Alert.alert(error.message)
-    setLoading(false)
+  const onRetrievePasswordPress = async (email) => {
+    let { data, error } = await supabase.auth.resetPasswordForEmail(email)
+    if (data) {
+      console.log(data)
+    } else {
+      console.log(error)
+    }
   }
 
   return (
     <View style={styles.root}>
-      <Image
-        source={Logo}
-        style={[styles.logo, { height: height * 0.3 }]}
-        resizeMode="contain"
-      />
-      <InputField placeholder="Email" value={email} setValue={setEmail} />
-      <InputField
-        placeholder="Password"
-        value={password}
-        setValue={setPassword}
-        isPassword
-      />
-      <CustomButton
-        text="Login"
-        onPress={() => onLoginPressed(email, password)}
-        btnType={btn["2nd"]}
-      />
-      <CustomButton
-        text="Retrieve password"
-        onPress={onRetrievePasswordPress}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
-      />
-      <CustomButton
-        text="Logout"
-        onPress={onLogoutPressed}
-        btnType={btn["3rd"]}
-        textType={btn["3rd"]}
-        isLoggedIn={isLoggedIn}
-      />
+      <View style={styles.container}>
+        <Image
+          source={Logo}
+          style={[styles.logo, { width: width - 32, height: 110 }]}
+          resizeMode="contain"
+        />
+        <View style={{ width: 248, gap: 32 }}>
+          <InputFieldRound
+            placeholder="Email"
+            value={email}
+            setValue={setEmail}
+            inputMode="email"
+          />
+          <InputFieldRound
+            placeholder="Password"
+            value={password}
+            setValue={setPassword}
+            isPassword
+          />
+        </View>
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 16,
+          gap: 32,
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        <CustomButton
+          text="Logga in"
+          onPress={() => onLoginPressed(email, password)}
+          btnType={"LOGIN"}
+        />
+        <Pressable onPress={() => onRetrievePasswordPress(email)}>
+          <Text>Glömt lösenord?</Text>
+        </Pressable>
+      </View>
       <View>
         <Spinner visible={loading} />
       </View>
@@ -104,13 +108,13 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     alignItems: "center",
-    padding: 20,
+    justifyContent: "center",
     backgroundColor: "#3693CF",
   },
-  logo: {
-    width: "70%",
-    maxWidth: 300,
-    maxHeight: 300,
+  container: {
+    height: 380,
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 })
 
