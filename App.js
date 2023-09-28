@@ -193,12 +193,12 @@ export default function App() {
             <Stack.Screen
               name="Loginscreen"
               component={LoginScreen}
-              options={{ title: "Login screen - not final" }}
+              options={{ title: "Login screen" }}
             />
             <Stack.Screen
               name="Signupscreen"
               component={SignupScreen}
-              options={{ title: "Signup screen - not final" }}
+              options={{ title: "Signup screen" }}
             />
           </>
         )}

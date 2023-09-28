@@ -8,11 +8,13 @@ import {
   useWindowDimensions,
   Alert,
 } from "react-native"
-
 import Logo from "../../../assets/adaptive-icon.png"
-import InputField from "../../components/InputField/InputField"
-import CustomButton from "../../components/CustomButton/CustomButton"
+import InputField from "../../components/InputField"
+import CustomButton from "../../components/CustomButton"
 import Spinner from "react-native-loading-spinner-overlay"
+import TermsModal from "./../../components/Modals/TermsModal"
+import SuccessModal from "./../../components/Modals/SuccessModal"
+import ErrorModal from "./../../components/Modals/ErrorModal"
 
 const btn = {
   "1st": "PRIMARY",
@@ -24,9 +26,30 @@ const SignupScreen = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showErrorModal, setShowErrorModal] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
   const { height } = useWindowDimensions()
 
-  const onSignupPressed = async (email, password) => {
+  const onSignupPressed = async () => {
+    if (isChecked) {
+      setShowTermsModal(true)
+    } else {
+      setShowErrorModal(true)
+    }
+  }
+
+  const handleTermsAccept = () => {
+    setShowTermsModal(false)
+    setShowSuccessModal(true)
+    setTimeout(() => {
+      setShowSuccessModal(false)
+      sendToSupabase(email, password)
+    }, 3000)
+  }
+
+  const sendToSupabase = async (email, password) => {
     setLoading(true)
     const { data, error } = await supabase.auth.signUp({
       email: email,
@@ -47,19 +70,26 @@ const SignupScreen = () => {
       />
       <InputField placeholder="Email" value={email} setValue={setEmail} />
       <InputField
-        placeholder="Password"
+        placeholder="Lösenord"
         value={password}
         setValue={setPassword}
         isPassword
       />
       <CustomButton
-        text="Sign up"
-        onPress={() => onSignupPressed(email, password)}
+        text="Registrera konto"
+        onPress={onSignupPressed}
         btnType={btn["2nd"]}
       />
       <View>
         <Spinner visible={loading} />
       </View>
+
+      <TermsModal isVisible={showTermsModal} onAccept={handleTermsAccept} />
+      <SuccessModal isVisible={showSuccessModal} />
+      <ErrorModal
+        isVisible={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+      />
     </View>
   )
 }

@@ -54,7 +54,93 @@ const DashboardScreen = ({ session }) => {
 
   useEffect(() => {
     // fetchUserSubscriptions(user.id) // FIXME: Delete
-  })
+    getActiveDiscount(connectedServices, authUser)
+  }, [connectedServices, authUser])
+
+  useEffect(() => {
+    console.log(discounts) // Log the updated discounts state
+  }, [discounts])
+
+  const getActiveDiscount = async (services, user) => {
+    const updatedDiscounts = []
+
+    for (let i = 0; i < services.length; i++) {
+      if (services[i].discount_active) {
+        const { data: activeDiscounts, error } = await supabase
+          .from("discounts")
+          .select(`name, duration`)
+          .eq("services_id", services[i].id)
+
+        if (error) console.error(error.message)
+        if (error) Alert.alert(error.message)
+
+        updatedDiscounts.push(activeDiscounts[0])
+      }
+    }
+    setDiscounts(updatedDiscounts)
+  }
+
+  const getActiveDiscountEndDate = () => {}
+
+  // Expo Notifications: Checks if if any of the connected services has an active discount. If so, a push notification with the service name, subscription name, and discount start date will be sent. THIS CODE BLOCK is meant to be modified according to the app's needs. -MV --->
+  // const usersServices = convertFetchObject(users_subscriptions)
+
+  // for (let i = 0; i < usersServices.length; i++) {
+  //   if (usersServices[i].discount_active) {
+  //     const { data: activeDiscounts, error } = await supabase
+  //       .from("discounts")
+  //       .select(`name, duration`)
+  //       .eq("services_id", usersServices[i].id)
+
+  //     // This checks if there are still days left on the discount, or if the days have run out. - MV
+  //     if (activeDiscounts[0] && activeDiscounts[0].duration !== null) {
+  //       const todaysDate = new Date()
+  //       const discountStartDateStr = usersServices[i].start_date
+
+  //       const discountDaysDuration = activeDiscounts[0].duration
+
+  //       const discountStartDate = new Date(discountStartDateStr)
+  //       // console.log(discountStartDate)
+  //       const modifiedDate = new Date(usersServices[i].start_date)
+  //       modifiedDate.setDate(
+  //         discountStartDate.getDate() + discountDaysDuration,
+  //       )
+
+  //       // Converting modifiedDate to a format the calendar can use. -MV
+  //       const year = modifiedDate.getFullYear()
+  //       const month = String(modifiedDate.getMonth() + 1).padStart(2, "0")
+  //       const day = String(modifiedDate.getDate()).padStart(2, "0")
+
+  //       const endDate = `${year}/${month}/${day}`
+
+  //       console.log(endDate)
+  //       //
+
+  //       const timeDifference = modifiedDate - todaysDate
+
+  //       const daysDifference = Math.ceil(
+  //         timeDifference / (1000 * 60 * 60 * 24),
+  //       )
+
+  //       console.log(`Days left on discount: ${daysDifference}`)
+
+  //       Notifications.scheduleNotificationAsync({
+  //         content: {
+  //           title: `${usersServices[i].name}`,
+  //           body: `Abonnemang: ${usersServices[i].subscriptions[0].name}
+  //           Rabatt: ${activeDiscounts[0].name}
+  //           Kvarvarande rabattdagar: ${daysDifference}`,
+  //         },
+  //         trigger: null,
+  //       })
+  //     }
+
+  //     if (error) console.error(error.message)
+  //     if (error) Alert.alert(error.message)
+  //   }
+  // }
+
+  // <--- --- --- --- --- ---|
 
   useEffect(() => {
     searchServices()
@@ -205,66 +291,6 @@ const DashboardScreen = ({ session }) => {
       .eq("users_id", user)
     if (users_subscriptions) {
       setConnectedServices(convertFetchObject(users_subscriptions))
-
-      // Expo Notifications: Checks if if any of the connected services has an active discount. If so, a push notification with the service name, subscription name, and discount start date will be sent. THIS CODE BLOCK is meant to be modified according to the app's needs. -MV --->
-      const usersServices = convertFetchObject(users_subscriptions)
-
-      for (let i = 0; i < usersServices.length; i++) {
-        if (usersServices[i].discount_active) {
-          const { data: activeDiscounts, error } = await supabase
-            .from("discounts")
-            .select(`name, duration`)
-            .eq("services_id", usersServices[i].id)
-
-          // This checks if there are still days left on the discount, or if the days have run out. - MV
-          if (activeDiscounts[0] && activeDiscounts[0].duration !== null) {
-            const todaysDate = new Date()
-            const discountStartDateStr = usersServices[i].start_date
-
-            const discountDaysDuration = activeDiscounts[0].duration
-
-            const discountStartDate = new Date(discountStartDateStr)
-            // console.log(discountStartDate)
-            const modifiedDate = new Date(usersServices[i].start_date)
-            modifiedDate.setDate(
-              discountStartDate.getDate() + discountDaysDuration,
-            )
-
-            // Converting modifiedDate to a format the calendar can use. -MV
-            const year = modifiedDate.getFullYear()
-            const month = String(modifiedDate.getMonth() + 1).padStart(2, "0")
-            const day = String(modifiedDate.getDate()).padStart(2, "0")
-
-            const endDate = `${year}/${month}/${day}`
-
-            console.log(endDate)
-            //
-
-            const timeDifference = modifiedDate - todaysDate
-
-            const daysDifference = Math.ceil(
-              timeDifference / (1000 * 60 * 60 * 24),
-            )
-
-            console.log(`Days left on discount: ${daysDifference}`)
-
-            Notifications.scheduleNotificationAsync({
-              content: {
-                title: `${usersServices[i].name}`,
-                body: `Abonnemang: ${usersServices[i].subscriptions[0].name}
-                Rabatt: ${activeDiscounts[0].name}
-                Kvarvarande rabattdagar: ${daysDifference}`,
-              },
-              trigger: null,
-            })
-          }
-
-          if (error) console.error(error.message)
-          if (error) Alert.alert(error.message)
-        }
-      }
-
-      // <--- --- --- --- --- ---|
     }
 
     if (error) console.error(error.message)
