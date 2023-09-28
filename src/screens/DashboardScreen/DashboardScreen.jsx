@@ -18,6 +18,8 @@ import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
 import CustomCard from "../../components/CustomCard"
 
+import * as Notifications from "expo-notifications"
+
 const DashboardScreen = ({ session }) => {
   const navigation = useNavigation()
   const [loading, setLoading] = useState(false)
@@ -199,8 +201,77 @@ const DashboardScreen = ({ session }) => {
       `,
       )
       .eq("users_id", user)
-    if (users_subscriptions)
+    if (users_subscriptions) {
       setConnectedServices(convertFetchObject(users_subscriptions))
+
+      // Expo Notifications: Checks if if any of the connected services has an active discount. If so, a push notification with the service name, subscription name, and discount start date will be sent. THIS CODE BLOCK is meant to be modified according to the app's needs. -MV --->
+      const usersServices = convertFetchObject(users_subscriptions)
+      console.log(usersServices)
+
+      for (
+        let usersServicesIndex = 0;
+        usersServicesIndex < usersServices.length;
+        usersServicesIndex++
+      ) {
+        if (usersServices[usersServicesIndex].discount_active) {
+          const { data: activeDiscounts, error } = await supabase
+            .from("discounts")
+            .select(`name, duration`)
+            .eq("services_id", usersServices[usersServicesIndex].id)
+
+          console.log(activeDiscounts)
+
+          // This checks if there are still days left on the discount, or if the days have run out. - MV
+          if (activeDiscounts[0] && activeDiscounts[0].duration !== null) {
+            const todaysDate = new Date()
+            const discountStartDateStr =
+              usersServices[usersServicesIndex].start_date
+
+            const discountDaysDuration = activeDiscounts[0].duration
+
+            const discountStartDate = new Date(discountStartDateStr)
+            // console.log(discountStartDate)
+            const modifiedDate = new Date(
+              usersServices[usersServicesIndex].start_date,
+            )
+            modifiedDate.setDate(
+              discountStartDate.getDate() + discountDaysDuration,
+            )
+
+            const timeDifference = modifiedDate - todaysDate
+
+            const daysDifference = Math.ceil(
+              timeDifference / (1000 * 60 * 60 * 24),
+            )
+
+            console.log(`Days left on discount: ${daysDifference}`)
+
+            Notifications.scheduleNotificationAsync({
+              content: {
+                title: `${usersServices[usersServicesIndex].name}`,
+                body: `Abonnemang: ${usersServices[usersServicesIndex].subscriptions[0].name}
+                Rabatt: ${activeDiscounts[0].name}
+                Kvarvarande rabattdagar: ${daysDifference}`,
+              },
+              trigger: null,
+            })
+          }
+
+          if (error) console.error(error.message)
+          if (error) Alert.alert(error.message)
+        }
+      }
+
+      // Notifications.scheduleNotificationAsync({
+      //   content: {
+      //     title: 'Look at that notification',
+      //     body: "I'm so proud of myself!",
+      //   },
+      //   trigger: null,
+      // });
+      // <--- --- --- --- --- ---|
+    }
+
     if (error) console.error(error.message)
     if (error) Alert.alert(error.message)
   }
