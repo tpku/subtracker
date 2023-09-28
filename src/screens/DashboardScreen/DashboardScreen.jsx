@@ -206,7 +206,6 @@ const DashboardScreen = ({ session }) => {
 
       // Expo Notifications: Checks if if any of the connected services has an active discount. If so, a push notification with the service name, subscription name, and discount start date will be sent. THIS CODE BLOCK is meant to be modified according to the app's needs. -MV --->
       const usersServices = convertFetchObject(users_subscriptions)
-      console.log({ usersServices })
 
       for (let i = 0; i < usersServices.length; i++) {
         if (usersServices[i].discount_active) {
@@ -214,8 +213,6 @@ const DashboardScreen = ({ session }) => {
             .from("discounts")
             .select(`name, duration`)
             .eq("services_id", usersServices[i].id)
-
-          console.log({ activeDiscounts })
 
           // This checks if there are still days left on the discount, or if the days have run out. - MV
           if (activeDiscounts[0] && activeDiscounts[0].duration !== null) {
@@ -230,6 +227,16 @@ const DashboardScreen = ({ session }) => {
             modifiedDate.setDate(
               discountStartDate.getDate() + discountDaysDuration,
             )
+
+            // Converting modifiedDate to a format the calendar can use. -MV
+            const year = modifiedDate.getFullYear()
+            const month = String(modifiedDate.getMonth() + 1).padStart(2, "0")
+            const day = String(modifiedDate.getDate()).padStart(2, "0")
+
+            const endDate = `${year}/${month}/${day}`
+
+            console.log(endDate)
+            //
 
             const timeDifference = modifiedDate - todaysDate
 
@@ -255,13 +262,6 @@ const DashboardScreen = ({ session }) => {
         }
       }
 
-      // Notifications.scheduleNotificationAsync({
-      //   content: {
-      //     title: 'Look at that notification',
-      //     body: "I'm so proud of myself!",
-      //   },
-      //   trigger: null,
-      // });
       // <--- --- --- --- --- ---|
     }
 
