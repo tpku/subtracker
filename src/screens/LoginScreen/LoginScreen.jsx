@@ -8,6 +8,7 @@ import {
   Alert,
   useWindowDimensions,
   Pressable,
+  ScrollView,
 } from "react-native"
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
@@ -65,67 +66,71 @@ const LoginScreen = () => {
   }
 
   return (
-    <View style={styles.root}>
-      <View style={styles.container}>
-        <Image
-          source={Logo}
-          style={[
-            styles.logo,
-            { width: width - 32, height: 110, marginBottom: 150 },
-          ]}
-          resizeMode="contain"
-        />
-        <View style={{ width: 248, gap: 32 }}>
-          <InputFieldRound
-            placeholder="Email"
-            value={email}
-            setValue={setEmail}
-            // inputMode="email"
-          />
-          <InputFieldRound
-            placeholder="Password"
-            value={password}
-            setValue={setPassword}
-            isPassword
-          />
+    <>
+      <ScrollView
+        style={styles.scrollRoot}
+        keyboardShouldPersistTaps="handled"
+        showsHorizontalScrollIndicator={false}>
+        <View style={styles.root}>
+          <View style={styles.container}>
+            <Image
+              source={Logo}
+              style={[
+                styles.logo,
+                { width: width - 32, height: 110, marginBottom: 150 },
+              ]}
+              resizeMode="contain"
+            />
+            <View style={{ width: 248, gap: 32, alignItems: "center" }}>
+              <InputFieldRound
+                placeholder="Email"
+                value={email}
+                setValue={setEmail}
+                // inputMode="email"
+              />
+              <InputFieldRound
+                placeholder="Password"
+                value={password}
+                setValue={setPassword}
+                isPassword
+              />
+              <View style={{ height: 32 }} />
+              <CustomButton
+                text="Logga in"
+                onPress={() => onLoginPressed(email, password)}
+                btnType={"LOGIN"}
+              />
+              <Pressable onPress={() => onRetrievePasswordPress(email)}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Inter_400Regular",
+                  }}>
+                  Glömt lösenord?
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+
+          <View>
+            <Spinner visible={loading} />
+          </View>
         </View>
-      </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 32,
-          gap: 32,
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-        <CustomButton
-          text="Logga in"
-          onPress={() => onLoginPressed(email, password)}
-          btnType={"LOGIN"}
-        />
-        <Pressable onPress={() => onRetrievePasswordPress(email)}>
-          <Text
-            style={{
-              color: "#fff",
-              fontFamily: "Inter_400Regular",
-            }}>
-            Glömt lösenord?
-          </Text>
-        </Pressable>
-      </View>
-      <View>
-        <Spinner visible={loading} />
-      </View>
-    </View>
+      </ScrollView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  scrollRoot: {
+    height: "100",
+    backgroundColor: "#3693CF",
+  },
   root: {
+    height: "100",
     flex: 1,
     alignItems: "center",
     // justifyContent: "center",
-    backgroundColor: "#3693CF",
   },
   container: {
     marginTop: 200,

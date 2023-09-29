@@ -26,6 +26,7 @@ const CustomCard = (props) => {
     onPress,
     cardType = "PRIMARY",
     textType = "SECONDARY",
+    logoType = "PRIMARY",
   } = props
   const { height } = useWindowDimensions()
 
@@ -41,7 +42,7 @@ const CustomCard = (props) => {
       {/* <Text style={[styles.text, styles[`text_${textType}`]]}>{text}</Text> */}
       <Image
         source={Logos[imgSource]}
-        style={[styles.logo, { height: height * 0.3 }]}
+        style={[styles.logo, styles[`logo_${logoType}`]]}
         resizeMode="contain"
       />
     </Pressable>
@@ -69,6 +70,11 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
   },
+  container_DASHBOARD: {
+    backgroundColor: "#000000",
+    flex: 1,
+    aspectRatio: "1 / 1",
+  },
 
   text: {
     padding: 10,
@@ -83,8 +89,18 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: "100%",
-    maxWidth: 63,
-    maxHeight: 63,
+  },
+
+  logo_PRIMARY: {
+    width: "100%",
+    width: 63,
+    height: 63,
+  },
+
+  logo_DASHBOARD: {
+    backgroundColor: "black",
+    width: "80%",
+    height: "80%",
   },
 })
 

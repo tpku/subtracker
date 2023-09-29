@@ -6,19 +6,16 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
-  Image,
-  useWindowDimensions,
+  FlatList,
 } from "react-native"
+import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
+import * as Notifications from "expo-notifications"
 import { useNavigation } from "@react-navigation/native"
-import { FlatList } from "react-native"
 
 import supabase from "../../lib/initSupabase"
-import CustomButton from "../../components/CustomButton/CustomButton"
 import InputField from "../../components/InputField/InputField"
 import Spinner from "react-native-loading-spinner-overlay"
 import CustomCard from "../../components/CustomCard"
-
-import * as Notifications from "expo-notifications"
 
 const DashboardScreen = ({ session }) => {
   const navigation = useNavigation()
@@ -30,7 +27,9 @@ const DashboardScreen = ({ session }) => {
   const [toggleTotal, setToggleTotal] = useState(true)
   const [searchKey, setSearchKey] = useState("")
   const [resetServices, setResetServices] = useState("")
-
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+  })
   const currentDate = new Date()
   const formattedDate = `${currentDate.getFullYear()}/${(
     "0" +
@@ -206,7 +205,6 @@ const DashboardScreen = ({ session }) => {
 
       // Expo Notifications: Checks if if any of the connected services has an active discount. If so, a push notification with the service name, subscription name, and discount start date will be sent. THIS CODE BLOCK is meant to be modified according to the app's needs. -MV --->
       const usersServices = convertFetchObject(users_subscriptions)
-      console.log(usersServices)
 
       for (
         let usersServicesIndex = 0;
@@ -218,8 +216,6 @@ const DashboardScreen = ({ session }) => {
             .from("discounts")
             .select(`name, duration`)
             .eq("services_id", usersServices[usersServicesIndex].id)
-
-          console.log(activeDiscounts)
 
           // This checks if there are still days left on the discount, or if the days have run out. - MV
           if (activeDiscounts[0] && activeDiscounts[0].duration !== null) {
@@ -287,20 +283,21 @@ const DashboardScreen = ({ session }) => {
     return totalPrice
   }
 
+  if (!fontsLoaded && !fontError) {
+    return null
+  }
+
   return (
-    <ScrollView>
+    <ScrollView showsHorizontalScrollIndicator={false}>
       <View style={styles.root}>
         <View style={styles.container}>
-          {/* FIXME: Remove */}
-          {/* <Text style={styles.heading}>Welcome user: {loggedInUser}</Text> */}
-
-          {/* FIXME: Automated search don't work on mobile, automatically updating the services field */}
           <Text style={styles.heading}>Lägg till tjänst</Text>
           <InputField
             placeholder="Sök:"
             defaultValue={searchKey}
             setValue={setSearchKey} // Replace
             onSubmitEditing={searchServices} // Replace
+            inputType={"SECONDARY"}
           />
         </View>
 
@@ -315,6 +312,7 @@ const DashboardScreen = ({ session }) => {
                 key={index}
                 imgSource={service.id - 1}
                 btnType="SECONDARY"
+                logoType="PRIMARY"
                 onPress={async () => {
                   const isActive = await checkUserService(authUser, service.id)
                   const activeSub = await getActiveSub(authUser, service.id)
@@ -352,28 +350,60 @@ const DashboardScreen = ({ session }) => {
 
         <ScrollView
           style={styles.serviceScroll}
-          horizontal
           showsHorizontalScrollIndicator={false}>
-          {connectedServices &&
-            connectedServices.map((service, index) => (
-              <CustomCard
-                text={service.name}
-                key={index}
-                imgSource={service.id - 1}
-                btnType="SECONDARY"
-                onPress={async () => {
-                  const isActive = await checkUserService(authUser, service.id)
-                  navigation.navigate("ProductViewScreen", {
-                    name: service.name,
-                    serviceId: service.id,
-                    activeService: service,
-                    isActive: isActive,
-                    isActiveSubscription: service.subscriptions[0],
-                    startDate: service.start_date,
-                  })
-                }}
-              />
-            ))}
+          <FlatList
+            data={connectedServices ? connectedServices : null}
+            renderItem={(service, index) => (
+              console.log(service.item.id),
+              (
+                <CustomCard
+                  text={service.item.name}
+                  key={index}
+                  imgSource={service.item.id - 1}
+                  cardType="DASHBOARD"
+                  logoType="DASHBOARD"
+                  onPress={async () => {
+                    const isActive = await checkUserService(
+                      authUser,
+                      service.item.id,
+                    )
+                    navigation.navigate("ProductViewScreen", {
+                      name: service.item.name,
+                      serviceId: service.item.id,
+                      activeService: service,
+                      isActive: isActive,
+                      isActiveSubscription: service.item.subscriptions[0],
+                      startDate: service.item.start_date,
+                    })
+                  }}
+                />
+              )
+            )}
+            numColumns={2}>
+            {/* {connectedServices &&
+              connectedServices.map((service, index) => (
+                <CustomCard
+                  text={service.name}
+                  key={index}
+                  imgSource={service.id - 1}
+                  btnType="SECONDARY"
+                  onPress={async () => {
+                    const isActive = await checkUserService(
+                      authUser,
+                      service.id,
+                    )
+                    navigation.navigate("ProductViewScreen", {
+                      name: service.name,
+                      serviceId: service.id,
+                      activeService: service,
+                      isActive: isActive,
+                      isActiveSubscription: service.subscriptions[0],
+                      startDate: service.start_date,
+                    })
+                  }}
+                />
+              ))} */}
+          </FlatList>
         </ScrollView>
 
         <View>
@@ -394,9 +424,11 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   heading: {
+    fontFamily: "Inter_400Regular",
     fontSize: 22,
   },
   headingBig: {
+    fontFamily: "Inter_400Regular",
     fontSize: 36,
   },
   centerContainer: {
