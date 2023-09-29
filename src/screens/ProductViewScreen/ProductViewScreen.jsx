@@ -80,18 +80,20 @@ const ProductViewScreen = ({ route }) => {
         blurRadius={10}>
         <View style={styles.centerContainer}>
           <CustomCard cardType={"SECONDARY"} imgSource={activeService.id - 1} />
-        </View>
-        <View style={styles.content}>
-          <Text>
+          <Text style={{ fontSize: 20, color: "Black", fontWeight: "bold" }}>
             {isActive
               ? `${activeService.name}: ${isActiveSubscription.name}`
               : `${activeService.name}`}
           </Text>
-          <Text>{isActive ? `Start date: ${startDate}` : ""}</Text>
-          <Text>
+          <Text style={{ fontSize: 20, color: "Black", fontWeight: "bold" }}>
             {isActive ? `${isActiveSubscription.price} kr / mån` : ""}
           </Text>
-          <Text>
+        </View>
+        <View style={styles.content}>
+          <Text style={{ fontSize: 20 }}>
+            {isActive ? `Start date: ${startDate}` : ""}
+          </Text>
+          <Text style={{ fontSize: 20 }}>
             Prenumenation: {serviceIsActive ? "Aktiv" : "Ej ansluten"}
           </Text>
           {serviceIsActive ? (
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   root: {
     display: "flex",
     flexDirection: "column",
-    rowGap: 8,
+    // rowGap: 8,
     flex: 1,
     backgroundColor: "white",
   },
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
     paddingTop: 56,
     paddingBottom: 36,
     alignItems: "center",
+    gap: 8,
   },
   image: {
     // margin: 24,
@@ -159,6 +162,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     aspectRatio: "1/1",
     backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 32,
   },
 })
 

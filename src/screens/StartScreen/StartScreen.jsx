@@ -6,6 +6,7 @@ import {
   Image,
   useWindowDimensions,
   StyleSheet,
+  ScrollView,
 } from "react-native"
 
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
@@ -27,74 +28,81 @@ const StartScreen = ({ navigation }) => {
     return null
   }
   return (
-    <View style={styles.root}>
-      <View style={styles.container}>
-        <Image
-          source={Logo}
-          style={[
-            styles.logo,
-            { width: width - 32, height: 110, marginBottom: 150 },
-          ]}
-          resizeMode="contain"
-        />
-        <View style={{ width: 248, gap: 32 }}>
-          <CustomButtonRound
-            text="Logga in"
-            onPress={() => navigation.navigate("Loginscreen")}
-            btnType={"START"}
-          />
-          <CustomButtonRound
-            text="Skapa konto"
-            onPress={() => navigation.navigate("Signupscreen")}
-            btnType={"START"}
-          />
-          <Text style={{ textAlign: "center" }}>Eller med</Text>
+    <>
+      <ScrollView style={styles.scrollRoot} keyboardShouldPersistTaps="handled">
+        <View style={styles.root}>
+          <View style={styles.container}>
+            <Image
+              source={Logo}
+              style={[
+                styles.logo,
+                { width: width - 32, height: 110, marginBottom: 150 },
+              ]}
+              resizeMode="contain"
+            />
 
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 24,
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-            <Pressable style={styles.imageContainer}>
-              <Image
-                source={google}
-                style={[styles.logo, { width: 49, height: 49 }]}
-                resizeMode="contain"
+            <View style={{ width: 248, gap: 32, paddingBottom: 32 }}>
+              <CustomButtonRound
+                text="Logga in"
+                onPress={() => navigation.navigate("Loginscreen")}
+                btnType={"START"}
               />
-            </Pressable>
-            <Pressable style={styles.imageContainer}>
-              <Image
-                source={apple}
-                style={[styles.logo, { width: 49, height: 49 }]}
-                resizeMode="contain"
+              <CustomButtonRound
+                text="Skapa konto"
+                onPress={() => navigation.navigate("Signupscreen")}
+                btnType={"START"}
               />
-            </Pressable>
-            <Pressable style={styles.imageContainer}>
-              <Image
-                source={facebook}
-                style={[styles.logo, { width: 49, height: 49 }]}
-                resizeMode="contain"
-              />
-            </Pressable>
+              <Text style={{ textAlign: "center" }}>Eller med</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 24,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                <Pressable style={styles.imageContainer}>
+                  <Image
+                    source={google}
+                    style={[styles.logo, { width: 49, height: 49 }]}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+                <Pressable style={styles.imageContainer}>
+                  <Image
+                    source={apple}
+                    style={[styles.logo, { width: 49, height: 49 }]}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+                <Pressable style={styles.imageContainer}>
+                  <Image
+                    source={facebook}
+                    style={[styles.logo, { width: 49, height: 49 }]}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+              </View>
+            </View>
           </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  scrollRoot: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#3693CF",
+  },
   root: {
     flex: 1,
     alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: "#3693CF",
   },
   container: {
     marginTop: 200,
-    height: 380,
+    flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
   },

@@ -3,7 +3,13 @@ import { View, Text, TextInput, StyleSheet } from "react-native"
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 
 const InputField = (props) => {
-  const { value, setValue, placeholder, isPassword } = props
+  const {
+    value,
+    setValue,
+    placeholder,
+    isPassword,
+    inputType = "PRIMARY",
+  } = props
   let [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
   })
@@ -14,7 +20,7 @@ const InputField = (props) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, styles[`container_${inputType}`]]}
         placeholder={placeholder}
         defaultValue={value} // FIXME: For dashboard search
         onChangeText={(text) => setValue(text)} // FIXME: For dashboard search // Replace
@@ -30,11 +36,17 @@ const InputField = (props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    borderColor: "#3693cf",
     borderWidth: 2,
     backgroundColor: "white",
     borderRadius: 15,
+    borderColor: "#3693cf",
   },
+
+  container_SECONDARY: {
+    borderColor: "#3693cf",
+    height: 48,
+  },
+
   input: {
     color: "#6C6C6C",
     fontSize: 16,

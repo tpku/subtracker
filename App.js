@@ -174,7 +174,7 @@ export default function App() {
                     options={{
                       headerStyle: {
                         backgroundColor: "#3693CF",
-                        height: 85,
+                        height: 105,
                       },
                       tabBarLabelStyle: { display: "none" },
                       tabBarIconStyle: {
@@ -198,8 +198,7 @@ export default function App() {
                     options={{
                       headerStyle: {
                         backgroundColor: "#3693CF",
-                        height: 85,
-                        width: width,
+                        height: 105,
                       },
                       tabBarLabelStyle: { display: "none" },
                       tabBarIconStyle: {
@@ -208,7 +207,7 @@ export default function App() {
                       tabBarIcon: () => {
                         return (
                           <Image
-                            style={{ width: 40, height: 45 }}
+                            style={{ width: 42, height: 45, padding: 5 }}
                             source={{
                               uri: tabBarIconProfile,
                             }}
@@ -219,6 +218,10 @@ export default function App() {
                   />
                   <Tab.Screen
                     options={{
+                      headerStyle: {
+                        backgroundColor: "#3693CF",
+                        height: 105,
+                      },
                       tabBarIconStyle: { display: "none" },
                       tabBarLabelStyle: { display: "none" },
                       tabBarButton: () => null,
@@ -228,6 +231,10 @@ export default function App() {
                   />
                   <Tab.Screen
                     options={{
+                      headerStyle: {
+                        backgroundColor: "#3693CF",
+                        height: 105,
+                      },
                       tabBarIconStyle: { display: "none" },
                       tabBarLabelStyle: { display: "none" },
                       tabBarButton: () => null,
@@ -237,6 +244,10 @@ export default function App() {
                   />
                   <Tab.Screen
                     options={{
+                      headerStyle: {
+                        backgroundColor: "#3693CF",
+                        height: 105,
+                      },
                       tabBarIconStyle: { display: "none" },
                       tabBarLabelStyle: { display: "none" },
                       tabBarButton: () => null,
