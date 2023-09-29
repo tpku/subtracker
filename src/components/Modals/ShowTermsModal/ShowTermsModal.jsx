@@ -1,5 +1,11 @@
 import React from "react"
-import { Modal, View, Text, StyleSheet } from "react-native"
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native"
 import CustomButton from "../../CustomButton"
 import Checkbox from "expo-checkbox"
 
@@ -72,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxText: {
-    fontSize: 12,
+    fontSize: 16,
     marginLeft: 12,
   },
   title: {

@@ -1,12 +1,26 @@
 import React from "react"
-import { Modal, View, Text, StyleSheet } from "react-native"
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Image,
+} from "react-native"
 import CustomButton from "../../CustomButton"
 
+import RejectImage from "../../../../assets/icons/material-symbols_error-outline.png"
+
 export default function ErrorModal({ visible, onDismiss }) {
+  const { height } = useWindowDimensions()
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.container}>
-        <Text style={styles.title}>Error</Text>
+        <Image
+          source={RejectImage}
+          style={[styles.logo, { height: height * 0.3 }]}
+          resizeMode="contain"
+        />
         <Text style={styles.body}>
           Du måste godkänna reglerna för lagrande av personlig data för att
           kunna använda appen!
@@ -49,5 +63,10 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: 14,
+  },
+  logo: {
+    width: "100%",
+    maxWidth: 63,
+    maxHeight: 63,
   },
 })
