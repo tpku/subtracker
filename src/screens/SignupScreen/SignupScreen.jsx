@@ -59,6 +59,7 @@ import {
   Pressable,
   Modal,
   Checkbox,
+  ScrollView,
 } from "react-native"
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter"
 import supabase from "../../lib/initSupabase"
@@ -121,7 +122,13 @@ const SignupScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.root}>
+    <>
+      <ScrollView
+        style={styles.scrollRoot}
+        keyboardShouldPersistTaps="handled"
+        showsHorizontalScrollIndicator={false}>
+        <View style={styles.root}>
+          
       {/* The Modal components - MV ---> */}
       <ShowTermsModal
         visible={showTermsModal}
@@ -133,70 +140,69 @@ const SignupScreen = ({ navigation }) => {
       <SuccessModal visible={successModal} />
       <ErrorModal visible={errorModal} onDismiss={handleErrorDismiss} />
       {/* <--- The Modal components - MV*/}
-      <View style={styles.container}>
-        <Image
-          source={Logo}
-          style={[
-            styles.logo,
-            { width: width - 32, height: 110, marginBottom: 150 },
-          ]}
-          resizeMode="contain"
-        />
-        <View style={{ width: 248, gap: 32 }}>
-          <InputFieldRound
-            placeholder="Email"
-            value={email}
-            setValue={setEmail}
-            inputMode="email"
-          />
-          <InputFieldRound
-            placeholder="Password"
-            value={password}
-            setValue={setPassword}
-            isPassword
-          />
+          <View style={styles.container}>
+            <Image
+              source={Logo}
+              style={[
+                styles.logo,
+                { width: width - 32, height: 110, marginBottom: 150 },
+              ]}
+              resizeMode="contain"
+            />
+            <View style={{ width: 248, gap: 32, alignItems: "center" }}>
+              <InputFieldRound
+                placeholder="Email"
+                value={email}
+                setValue={setEmail}
+                inputMode="email"
+              />
+              <InputFieldRound
+                placeholder="Password"
+                value={password}
+                setValue={setPassword}
+                isPassword
+              />
+              <View style={{ height: 32 }} />
+              <CustomButton
+                text="Skapa konto"
+                onPress={() => onSignupPressed(email, password)}
+                btnType={"LOGIN"}
+              />
+              <Pressable onPress={() => navigation.navigate("Startscreen")}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Inter_400Regular",
+                  }}>
+                  Tillbaka till startsidan.
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <View>
+            <Spinner visible={loading} />
+          </View>
         </View>
-      </View>
-      <View
-        style={{
-          position: "absolute",
-          bottom: 32,
-          gap: 32,
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-        <CustomButton
-          text="Skapa konto"
-          onPress={() => onSignupPressed(email, password)}
-          btnType={"LOGIN"}
-        />
-        <Pressable onPress={() => navigation.navigate("Startscreen")}>
-          <Text
-            style={{
-              color: "#fff",
-              fontFamily: "Inter_400Regular",
-            }}>
-            Tillbaka till startsidan.
-          </Text>
-        </Pressable>
-      </View>
-      <View>
-        <Spinner visible={loading} />
-      </View>
-    </View>
+      </ScrollView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    alignItems: "center",
+  scrollRoot: {
+    height: "100",
     backgroundColor: "#3693CF",
   },
+  root: {
+    height: "100",
+    flex: 1,
+    alignItems: "center",
+    // justifyContent: "center",
+  },
   container: {
+    marginTop: 200,
     height: 380,
     alignItems: "center",
-    marginTop: 200,
     justifyContent: "space-between",
   },
 })
